@@ -16,8 +16,11 @@ int main() {
     getline(file, line); // Clear header
     while (getline(file, line))
     {
-        // Date reported
+        // Case number
         size_t firstDelim = line.find(',');
+        string caseNum = line.substr(0, firstDelim + 1);
+        cout << caseNum << " ";
+        // Date reported
         size_t secondDelim = line.find(',', firstDelim + 1);
         string dateRptd = line.substr(firstDelim + 1, 10);
         cout << dateRptd << " ";
