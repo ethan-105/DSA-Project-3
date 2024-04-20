@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <set.h>
+#include "set.h"
 
 
 using namespace std; // certfied std'er B)
@@ -15,17 +15,15 @@ int main() {
     ifstream file("Trimmed_Crime_Data_from_2020_to_Present.csv");
     string line;
     getline(file, line); // Clear header
+    Set crimeSet;
     while (getline(file, line))
     {
         // Case number
         size_t firstDelim = line.find(',');
         string caseNum = line.substr(0, firstDelim);
         //cout << caseNum << " ";
-        // Date reported
-        size_t secondDelim = line.find(',', firstDelim + 1);
-        string dateRptd = line.substr(firstDelim + 1, 10);
-        //cout << dateRptd << " ";
         // Date Occurred
+        size_t secondDelim = line.find(',', firstDelim + 1);
         string dateOCC = line.substr(secondDelim + 1, 10);
         //cout << dateOCC << " ";
         // Time Occurred
@@ -37,7 +35,9 @@ int main() {
         size_t sixthDelim = line.find(',', fifthDelim + 1);
         string areaName = line.substr(fifthDelim + 1, (sixthDelim - (fifthDelim + 1)));
         //cout << areaName << endl;
+        crimeSet.insert(caseNum, dateOCC, timeOCC, areaName);
     }
+    crimeSet.printTree();
 	// create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode(1920, 1080), "Los Angeles Crime Visualizer");
 

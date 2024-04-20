@@ -13,22 +13,19 @@ public:
 	struct Data // Data for in crime report
 	{
 		string caseNum;
-		string dateRptd;
 		string dateOCC;
 		string timeOCC;
 		string areaName;
 		Data()
 		{
 			this->caseNum = "";
-			this->dateRptd = "";
 			this->dateOCC = "";
 			this->timeOCC = "";
 			this->areaName = "";
 		}
-		Data(string caseNum, string dateRptd, string dateOCC, string timeOCC, string areaName)
+		Data(string caseNum, string dateOCC, string timeOCC, string areaName)
 		{
 			this->caseNum = caseNum;
-			this->dateRptd = dateRptd;
 			this->dateOCC = dateOCC;
 			this->timeOCC = timeOCC;
 			this->areaName = areaName;
@@ -58,11 +55,12 @@ public:
 		leftright = false;
 		rightleft = false;
 		rightright = false;
+
 	}
 
-	void insert(string caseNum, string dateRptd, string dateOCC, string timeOCC, string areaName)
+	void insert(string caseNum, string dateOCC, string timeOCC, string areaName)
 	{
-		Data data = Data(caseNum, dateRptd, dateOCC, timeOCC, areaName);
+		Data data = Data(caseNum, dateOCC, timeOCC, areaName);
 		if (head != nullptr)
 		{
 			head = insertHelper(head, data);
@@ -182,15 +180,15 @@ Set::CrimeReport* Set::insertHelper(CrimeReport* head, Data data)
 
 	if (conflict) // Color conflicts
 	{
-		if (head->parent->rchild == head) 
+		if (head->parent->rchild == head)  // if right child
 		{
-			if (head->parent->lchild == nullptr || head->parent->lchild->color == 'B') 
+			if (head->parent->lchild == nullptr || head->parent->lchild->color == 'B') // if no left child or left child is black
 			{
-				if (head->lchild != nullptr && head->lchild->color == 'R')
+				if (head->lchild != nullptr && head->lchild->color == 'R') // if left child exists and left child is red
 				{
 					rightleft = true;
 				}
-				else if (head->rchild != nullptr && head->rchild->color == 'R')
+				else if (head->rchild != nullptr && head->rchild->color == 'R') // right child exists and right child is red
 				{
 					leftleft = true;
 				}
@@ -205,7 +203,7 @@ Set::CrimeReport* Set::insertHelper(CrimeReport* head, Data data)
 				}
 			}
 		}
-		else 
+		else // Repeat for right side
 		{
 			if (head->parent->rchild == nullptr || head->parent->rchild->color == 'B') 
 			{
@@ -228,6 +226,7 @@ Set::CrimeReport* Set::insertHelper(CrimeReport* head, Data data)
 				}
 			}
 		}
+		// Reset conflict
 		conflict = false;
 	}
 	return head;
