@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <set.h>
 
 
 using namespace std; // certfied std'er B)
@@ -18,27 +19,27 @@ int main() {
     {
         // Case number
         size_t firstDelim = line.find(',');
-        string caseNum = line.substr(0, firstDelim + 1);
-        cout << caseNum << " ";
+        string caseNum = line.substr(0, firstDelim);
+        //cout << caseNum << " ";
         // Date reported
         size_t secondDelim = line.find(',', firstDelim + 1);
         string dateRptd = line.substr(firstDelim + 1, 10);
-        cout << dateRptd << " ";
+        //cout << dateRptd << " ";
         // Date Occurred
         string dateOCC = line.substr(secondDelim + 1, 10);
-        cout << dateOCC << " ";
+        //cout << dateOCC << " ";
         // Time Occurred
         size_t thirdDelim = line.find(',', secondDelim + 1);
         string timeOCC = line.substr(thirdDelim + 1, 4);
-        cout << timeOCC << " ";
+        //cout << timeOCC << " ";
         // Area Name
         size_t fifthDelim = line.find(',', line.find(',', thirdDelim + 1) + 1);
         size_t sixthDelim = line.find(',', fifthDelim + 1);
         string areaName = line.substr(fifthDelim + 1, (sixthDelim - (fifthDelim + 1)));
-        cout << areaName << endl;
+        //cout << areaName << endl;
     }
 	// create initial welcome window ! 
-    sf::RenderWindow welcomeWindow(sf::VideoMode(2400, 1800), "Los Angeles Crime Visualizer");
+    sf::RenderWindow welcomeWindow(sf::VideoMode(1920, 1080), "Los Angeles Crime Visualizer");
 
     // start the initial window loop
     // this will be the "home base" window.
