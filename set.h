@@ -43,9 +43,9 @@ public:
 			this->data = data;
 		}
 		char color;
-		CrimeReport* parent;
-		CrimeReport* lchild;
-		CrimeReport* rchild;
+		CrimeReport* parent = nullptr;
+		CrimeReport* lchild = nullptr;
+		CrimeReport* rchild = nullptr;
 	};
 	CrimeReport* head;
 
