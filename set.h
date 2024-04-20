@@ -24,7 +24,7 @@ public:
 		CrimeReport* rchild = nullptr;
 	};
 	CrimeReport* head;
-
+	int size = 0;
 	Set() // Constructor
 	{
 		// Main head
@@ -40,6 +40,7 @@ public:
 	void insert(string caseNum, string dateOCC, string timeOCC, string areaName)
 	{
 		Data data = Data(caseNum, dateOCC, timeOCC, areaName);
+		this->size++;
 		if (head != nullptr)
 		{
 			head = insertHelper(head, data);

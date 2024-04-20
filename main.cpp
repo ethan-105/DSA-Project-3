@@ -15,7 +15,10 @@ int main() {
     ifstream file("Trimmed_Crime_Data_from_2020_to_Present.csv");
     string line;
     getline(file, line); // Clear header
-    Set crimeSet;
+    Set crimeSet; // Main set
+    vector<Set> monthSets(12);
+    vector<Set> areaSets(1);
+    vector<string> areas;
     while (getline(file, line))
     {
         // Case number
@@ -35,9 +38,78 @@ int main() {
         size_t sixthDelim = line.find(',', fifthDelim + 1);
         string areaName = line.substr(fifthDelim + 1, (sixthDelim - (fifthDelim + 1)));
         //cout << areaName << endl;
-        crimeSet.insert(caseNum, dateOCC, timeOCC, areaName);
+        switch (stoi(dateOCC.substr(0, 2)))
+        {
+        case 1:
+            monthSets[0].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 2:
+            monthSets[1].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 3:
+            monthSets[2].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 4:
+            monthSets[3].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 5:
+            monthSets[4].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 6:
+            monthSets[5].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 7:
+            monthSets[6].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 8:
+            monthSets[7].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 9:
+            monthSets[8].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 10:
+            monthSets[9].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 11:
+            monthSets[10].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        case 12:
+            monthSets[11].insert(caseNum, dateOCC, timeOCC, areaName);
+            break;
+        }
+        if (areas.size() == 0)
+        {
+            areaSets[0].insert(caseNum, dateOCC, timeOCC, areaName);
+            areas.push_back(areaName);
+        }
+        for (int i = 0; i < areas.size(); i++)
+        {
+            if (areaName == areas[i])
+            {
+                areaSets[i].insert(caseNum, dateOCC, timeOCC, areaName);
+                break;
+            }
+            else if (i == areas.size() - 1)
+            {
+                areaSets.resize(areaSets.size() + 1);
+                areaSets[i + 1].insert(caseNum, dateOCC, timeOCC, areaName);
+                areas.push_back(areaName);
+                break;
+            }
+        }
     }
-    crimeSet.printTree();
+    // Example uses
+    cout << "Number of crimes by month" << endl;
+    string months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    for (int i = 0; i < monthSets.size(); i++)
+    {
+        cout << months[i] << ": " << monthSets[i].size << endl;
+    }
+    cout << "Number of crimes by area" << endl;
+    for (int i = 0; i < monthSets.size(); i++)
+    {
+        cout << areas[i] << ": " << areaSets[i].size << endl;
+    }
 	// create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode(1920, 1080), "Los Angeles Crime Visualizer");
 
