@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/DSA-Project-3.vcxproj
+/DSA-Project-3.vcxproj.filters
+/CppProperties.json
+/sfml-graphics-2.dll
+/sfml-system-2.dll
+/sfml-window-2.dll
