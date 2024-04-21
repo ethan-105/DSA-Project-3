@@ -154,24 +154,24 @@ int main() {
 
 
     // change this so that it only displays once the subheader text is done typing
-    sf::Text begin; 
-    begin.setFont(font); 
-    begin.setCharacterSize(46); 
+    sf::Text begin;
+    begin.setFont(font);
+    begin.setCharacterSize(46);
     begin.setFillColor(sf::Color::Black);
-    begin.setPosition(50, 475); 
-    begin.setString("Begin"); 
+    begin.setPosition(50, 475);
+    begin.setString("Begin");
 
 
     sf::RectangleShape beginButton(sf::Vector2f(135.f, 60.f));
-    beginButton.setPosition(45, 470); 
-    beginButton.setFillColor(sf::Color::White); 
+    beginButton.setPosition(45, 470);
+    beginButton.setFillColor(sf::Color::White);
     //beginButton.setOutlineColor(sf::Color::Black); 
     //beginButton.setOutlineThickness(0.5f); 
 
-    sf::RectangleShape curtain(sf::Vector2f(2400, 1800)); 
-    curtain.setFillColor(pink); 
+    sf::RectangleShape curtain(sf::Vector2f(2400, 1800));
+    curtain.setFillColor(pink);
 
-    
+
     sf::RectangleShape setButton(sf::Vector2f(250.f, 50.f)); // size of the first button
     setButton.setPosition(900, 200); // position of the button
     setButton.setFillColor(sf::Color::White);// fill color 
@@ -215,7 +215,7 @@ int main() {
         hashButtonBounds.left + (hashButtonBounds.width - label2Bounds.width) / 2,
         hashButtonBounds.top + (hashButtonBounds.height - label2Bounds.height) / 2
     );
-    
+
     // This circle setup should be outside the loop, so it's only created once
     sf::CircleShape circle(100.f); // circle with a radius of 100 pixels
     circle.setFillColor(sf::Color::Magenta); // fill color green
@@ -224,30 +224,150 @@ int main() {
     circle.setOutlineColor(sf::Color::White); // outline color white
 
 
-    sf::CircleShape circle2(50.f); 
-    circle2.setFillColor(sf::Color::Cyan); 
-    circle2.setPosition(20, 45); 
-    circle2.setOutlineThickness(3.f); 
-    circle2.setOutlineColor(sf::Color::White); 
+    sf::CircleShape circle2(50.f);
+    circle2.setFillColor(sf::Color::Cyan);
+    circle2.setPosition(20, 45);
+    circle2.setOutlineThickness(3.f);
+    circle2.setOutlineColor(sf::Color::White);
 
     //bool beggining = false;
+    // ================================ sprites ==================================
+
+    sf::Texture laMap;
+    if (!laMap.loadFromFile("los angeles counties.png")) {
+        cout << "map broken" << endl;
+    }
+
+    sf::Sprite mapSprite;
+    mapSprite.setTexture(laMap);
+
+    sf::Texture a1;
+    if (!a1.loadFromFile("los angeles counties a1.png")) {
+        cout << "a broken" << endl;
+    }
+    sf::Sprite a1sprite;
+    a1sprite.setTexture(a1);
+
+    sf::Texture b2;
+    if (!b2.loadFromFile("los angeles counties b2.png")) {
+        cout << "b broken" << endl;
+    }
+    sf::Sprite b2sprite;
+    b2sprite.setTexture(b2);
+
+    sf::Texture m2;
+    if (!m2.loadFromFile("los angeles counties 2.png")) {
+        cout << "2 broken" << endl;
+    }
+    sf::Sprite m2sprite;
+    m2sprite.setTexture(m2);
+
+    sf::Texture m3;
+    if (!m3.loadFromFile("los angeles counties 3.png")) {
+        cout << "3 broken" << endl;
+    }
+    sf::Sprite m3sprite;
+    m3sprite.setTexture(m3);
+
+    sf::Texture m4;
+    if (!m4.loadFromFile("los angeles counties 4.png")) {
+        cout << "4 broken" << endl;
+    }
+    sf::Sprite m4sprite;
+    m4sprite.setTexture(m4);
+
+    sf::Texture m5;
+    if (!m5.loadFromFile("los angeles counties 5.png")) {
+        cout << "5 broken" << endl;
+    }
+    sf::Sprite m5sprite;
+    m5sprite.setTexture(m5);
+
+    sf::Texture m6;
+    if (!m6.loadFromFile("los angeles counties 6.png")) {
+        cout << "6 broken" << endl;
+    }
+    sf::Sprite m6sprite;
+    m6sprite.setTexture(m6);
+
+    sf::Texture m7;
+    if (!m7.loadFromFile("los angeles counties 7.png")) {
+        cout << "7 broken" << endl;
+    }
+    sf::Sprite m7sprite;
+    m7sprite.setTexture(m7);
+
+    sf::Texture m9;
+    if (!m9.loadFromFile("los angeles counties 9.png")) {
+        cout << "9 broken" << endl;
+    }
+    sf::Sprite m9sprite;
+    m9sprite.setTexture(m9);
+
+    sf::Texture m10;
+    if (!m10.loadFromFile("los angeles counties 10.png")) {
+        cout << "10 broken" << endl;
+    }
+    sf::Sprite m10sprite;
+    m10sprite.setTexture(m10);
+
+    sf::Texture m11;
+    if (!m11.loadFromFile("los angeles counties 11.png")) {
+        cout << "11 broken" << endl;
+    }
+    sf::Sprite m11sprite;
+    m11sprite.setTexture(m11);
+
+    sf::Texture m12;
+    if (!m12.loadFromFile("los angeles counties 12.png")) {
+        cout << "12 broken" << endl;
+    }
+    sf::Sprite m12sprite;
+    m12sprite.setTexture(m12);
+
+    sf::Texture m14;
+    if (!m14.loadFromFile("los angeles counties 14.png")) {
+        cout << "14 broken" << endl;
+    }
+    sf::Sprite m14sprite;
+    m14sprite.setTexture(m14);
+
+
+    //=================end sprites ========================================
+
+
+    // track for the slider
+    sf::RectangleShape track(sf::Vector2f(300, 10));
+    track.setPosition(250, 295); // temp position for testing 
+    track.setFillColor(sf::Color::White);
+
+    // handle for the slider
+    sf::CircleShape handle(15); // radius of 15px
+    handle.setPosition(250, 285); // set initial position to start of the track
+    handle.setFillColor(sf::Color::Red);
+
+    bool isDragging = false; // tracks whether the handle is being dragged
+
 
     while (welcomeWindow.isOpen()) {
+
+        if (clock.getElapsedTime().asMilliseconds() >= 25 && !isSubHeaderComplete) {
+            if (textIndex < fullText.length()) {
+                displayedText += fullText[textIndex++];
+                subHeader.setString(displayedText);
+                clock.restart();
+            }
+            else {
+                isSubHeaderComplete = true; // set flag to true when animation is complete so we can draw the begin button 
+            }
+        }
+
         sf::Event event;
         while (welcomeWindow.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 welcomeWindow.close();
 
-            if (clock.getElapsedTime().asMilliseconds() >= 10 && !isSubHeaderComplete) {
-                if (textIndex < fullText.length()) {
-                    displayedText += fullText[textIndex++];
-                    subHeader.setString(displayedText);
-                    clock.restart();
-                }
-                else {
-                    isSubHeaderComplete = true; // set flag to true when animation is complete so we can draw the begin button 
-                }
-            }
+
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
@@ -257,7 +377,58 @@ int main() {
 
                     if (beginButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
 
-                        //beggining = true; 
+                        sf::RenderWindow launch(sf::VideoMode(2400, 1800), "Comparator");
+
+                        while (launch.isOpen()) {
+                            sf::Event launchEvent;
+                            while (launch.pollEvent(launchEvent)) {
+                                if (launchEvent.type == sf::Event::Closed) {
+                                    launch.close();
+                                    welcomeWindow.close(); // close both windows when closing the comparator
+                                }
+
+                                if (launchEvent.type == sf::Event::MouseButtonPressed) {
+                                    if (handle.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        isDragging = true; // begin dragging the handle
+                                    }
+                                }
+
+
+                                if (launchEvent.type == sf::Event::MouseButtonReleased) {
+                                    isDragging = false; // stop dragging the handle
+                                }
+
+                                // handles mouse movement
+                                if (launchEvent.type == sf::Event::MouseMoved) {
+                                    if (isDragging) {
+                                        float newX = launchEvent.mouseMove.x - handle.getRadius();
+                                        // make sure that the handle stays within the track's bounds 
+                                        if (newX < track.getPosition().x) {
+                                            newX = track.getPosition().x;
+                                        }
+                                        else if (newX > track.getPosition().x + track.getSize().x - 2 * handle.getRadius()) {
+                                            newX = track.getPosition().x + track.getSize().x - 2 * handle.getRadius();
+                                        }
+                                        handle.setPosition(newX, handle.getPosition().y);
+                                    }
+                                }
+
+                            }
+
+
+
+                            // calculate the center position
+                            float x = (launch.getSize().x - mapSprite.getGlobalBounds().width) / 2;
+                            float y = (launch.getSize().y - mapSprite.getGlobalBounds().height) / 2;
+                            mapSprite.setPosition(x, y);
+
+
+                            launch.clear(pink);
+                            launch.draw(track);
+                            launch.draw(handle);
+                            launch.draw(mapSprite);
+                            launch.display();
+                        }
                     }
                     // check if click is within button1 bounds
                     if (setButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
@@ -275,7 +446,7 @@ int main() {
 
                             // Draw the circle here
                             setVisualizer.draw(circle);
-                            setVisualizer.draw(circle2); 
+                            setVisualizer.draw(circle2);
 
                             setVisualizer.display(); // end the current frame
                         }
@@ -298,7 +469,7 @@ int main() {
 
                             // draw the circle here
                             hashMapVisualizer.draw(circle);
-                            hashMapVisualizer.draw(circle2); 
+                            hashMapVisualizer.draw(circle2);
 
                             hashMapVisualizer.display(); // end the current frame
                         }
@@ -310,7 +481,7 @@ int main() {
         // clear screen
         welcomeWindow.clear(pink);
 
-        
+
         // draw the window contents here
         welcomeWindow.draw(header);
         welcomeWindow.draw(subHeader);
@@ -324,13 +495,13 @@ int main() {
         // welcomeWindow.draw(label2);
 
         // update the window and display it
-       
+
         //if (beggining = true) {
         //    welcomeWindow.draw(curtain); 
         //}
-        
+
         welcomeWindow.display();
-        
+
     }
 
     return 0;
