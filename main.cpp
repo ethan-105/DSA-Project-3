@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "set.h"
 
 
 using namespace std; // certfied std'er B)
@@ -15,103 +14,28 @@ int main() {
     ifstream file("Trimmed_Crime_Data_from_2020_to_Present.csv");
     string line;
     getline(file, line); // Clear header
-    Set crimeSet; // Main set
-    vector<Set> monthSets(12);
-    vector<Set> areaSets(1);
-    vector<string> areas;
     while (getline(file, line))
     {
-        // Case number
+        // Date reported
         size_t firstDelim = line.find(',');
-        string caseNum = line.substr(0, firstDelim);
-        //cout << caseNum << " ";
-        // Date Occurred
         size_t secondDelim = line.find(',', firstDelim + 1);
+        string dateRptd = line.substr(firstDelim + 1, 10);
+        cout << dateRptd << " ";
+        // Date Occurred
         string dateOCC = line.substr(secondDelim + 1, 10);
-        //cout << dateOCC << " ";
+        cout << dateOCC << " ";
         // Time Occurred
         size_t thirdDelim = line.find(',', secondDelim + 1);
         string timeOCC = line.substr(thirdDelim + 1, 4);
-        //cout << timeOCC << " ";
+        cout << timeOCC << " ";
         // Area Name
         size_t fifthDelim = line.find(',', line.find(',', thirdDelim + 1) + 1);
         size_t sixthDelim = line.find(',', fifthDelim + 1);
         string areaName = line.substr(fifthDelim + 1, (sixthDelim - (fifthDelim + 1)));
-        //cout << areaName << endl;
-        switch (stoi(dateOCC.substr(0, 2)))
-        {
-        case 1:
-            monthSets[0].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 2:
-            monthSets[1].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 3:
-            monthSets[2].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 4:
-            monthSets[3].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 5:
-            monthSets[4].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 6:
-            monthSets[5].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 7:
-            monthSets[6].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 8:
-            monthSets[7].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 9:
-            monthSets[8].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 10:
-            monthSets[9].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 11:
-            monthSets[10].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        case 12:
-            monthSets[11].insert(caseNum, dateOCC, timeOCC, areaName);
-            break;
-        }
-        if (areas.size() == 0)
-        {
-            areaSets[0].insert(caseNum, dateOCC, timeOCC, areaName);
-            areas.push_back(areaName);
-        }
-        for (int i = 0; i < areas.size(); i++)
-        {
-            if (areaName == areas[i])
-            {
-                areaSets[i].insert(caseNum, dateOCC, timeOCC, areaName);
-                break;
-            }
-            else if (i == areas.size() - 1)
-            {
-                areaSets.resize(areaSets.size() + 1);
-                areaSets[i + 1].insert(caseNum, dateOCC, timeOCC, areaName);
-                areas.push_back(areaName);
-                break;
-            }
-        }
+        cout << areaName << endl;
     }
-    // Example uses
-    cout << "Number of crimes by month" << endl;
-    string months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    for (int i = 0; i < monthSets.size(); i++)
-    {
-        cout << months[i] << ": " << monthSets[i].size << endl;
-    }
-    cout << "Number of crimes by area" << endl;
-    for (int i = 0; i < monthSets.size(); i++)
-    {
-        cout << areas[i] << ": " << areaSets[i].size << endl;
-    }
-	// create initial welcome window ! 
-    sf::RenderWindow welcomeWindow(sf::VideoMode(1920, 1080), "Los Angeles Crime Visualizer");
+    // create initial welcome window ! 
+    sf::RenderWindow welcomeWindow(sf::VideoMode(2400, 1800), "Los Angeles Crime Visualizer");
 
     // start the initial window loop
     // this will be the "home base" window.
@@ -337,16 +261,66 @@ int main() {
 
 
     // track for the slider
-    sf::RectangleShape track(sf::Vector2f(300, 10));
-    track.setPosition(250, 295); // temp position for testing 
+    sf::RectangleShape track(sf::Vector2f(1300, 10));
+    track.setPosition(500, 1500); // temp position for testing 
     track.setFillColor(sf::Color::White);
 
     // handle for the slider
     sf::CircleShape handle(15); // radius of 15px
-    handle.setPosition(250, 285); // set initial position to start of the track
-    handle.setFillColor(sf::Color::Red);
+    handle.setPosition(500, 1485); // set initial position to start of the track
+    handle.setFillColor(sf::Color::Cyan);
 
     bool isDragging = false; // tracks whether the handle is being dragged
+
+
+
+
+
+    //======================menu select==============================
+
+    // drop down button
+    sf::RectangleShape dropdownButton(sf::Vector2f(200.f, 50.f)); // size of the dropdown button
+    dropdownButton.setPosition(50, 600); // position of the dropdown button
+    dropdownButton.setFillColor(sf::Color::White);
+    sf::Text dropdownButtonText;
+    dropdownButtonText.setFont(font);
+    dropdownButtonText.setString("Select an aspect to compare");
+    dropdownButtonText.setCharacterSize(24);
+    dropdownButtonText.setFillColor(sf::Color::Black);
+    sf::FloatRect dropdownButtonBounds = dropdownButton.getGlobalBounds();
+    dropdownButtonText.setPosition(
+        dropdownButtonBounds.left + (dropdownButtonBounds.width - dropdownButtonText.getLocalBounds().width) / 2,
+        dropdownButtonBounds.top + (dropdownButtonBounds.height - dropdownButtonText.getLocalBounds().height) / 2
+    );
+
+    // menu items
+    vector<sf::Text> menuItems;
+    vector<string> itemLabels = { "Option 1", "Option 2", "Option 3" };
+    vector<sf::RectangleShape> menuItemShapes;
+    bool isDropdownVisible = false; // tracks visibility of dropdown items
+
+    for (size_t i = 0; i < itemLabels.size(); ++i) {
+        sf::Text itemText;
+        itemText.setFont(font);
+        itemText.setString(itemLabels[i]);
+        itemText.setCharacterSize(24);
+        itemText.setFillColor(sf::Color::Black);
+        menuItems.push_back(itemText);
+
+        sf::RectangleShape itemShape(sf::Vector2f(200.f, 50.f));
+        itemShape.setPosition(50, 650 + i * 50); // stacks items vertically
+        itemShape.setFillColor(sf::Color::White);
+        menuItemShapes.push_back(itemShape);
+
+        // center the text in each item
+        itemText.setPosition(
+            itemShape.getPosition().x + (itemShape.getSize().x - itemText.getLocalBounds().width) / 2,
+            itemShape.getPosition().y + (itemShape.getSize().y - itemText.getLocalBounds().height) / 2 - itemText.getLocalBounds().height * 0.5
+        );
+    }
+
+
+
 
 
     while (welcomeWindow.isOpen()) {
@@ -381,6 +355,8 @@ int main() {
 
                         while (launch.isOpen()) {
                             sf::Event launchEvent;
+
+
                             while (launch.pollEvent(launchEvent)) {
                                 if (launchEvent.type == sf::Event::Closed) {
                                     launch.close();
@@ -390,6 +366,26 @@ int main() {
                                 if (launchEvent.type == sf::Event::MouseButtonPressed) {
                                     if (handle.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                         isDragging = true; // begin dragging the handle
+                                    }
+
+                                    if (event.mouseButton.button == sf::Mouse::Left) {
+                                        sf::Vector2i mousePos = sf::Mouse::getPosition(launch);
+
+                                        // Toggle dropdown visibility
+                                        if (dropdownButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                                            isDropdownVisible = !isDropdownVisible;
+                                        }
+
+                                        // Check for dropdown item selection only if visible
+                                        if (isDropdownVisible) {
+                                            for (int i = 0; i < menuItemShapes.size(); ++i) {
+                                                if (menuItemShapes[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                                                    std::cout << "Selected: " << itemLabels[i] << std::endl;
+                                                    isDropdownVisible = false; // Optionally close the menu after selection
+                                                    break;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
 
@@ -413,16 +409,26 @@ int main() {
                                     }
                                 }
 
+
+
                             }
 
 
+                            mapSprite.setScale(1.5f, 1.5f);
 
-                            // calculate the center position
-                            float x = (launch.getSize().x - mapSprite.getGlobalBounds().width) / 2;
-                            float y = (launch.getSize().y - mapSprite.getGlobalBounds().height) / 2;
-                            mapSprite.setPosition(x, y);
+                            sf::Vector2u windowSize = welcomeWindow.getSize();
+                            sf::FloatRect spriteBounds = mapSprite.getGlobalBounds();
+                            mapSprite.setPosition((windowSize.x - spriteBounds.width) - 45, 45);
 
+                            launch.draw(dropdownButton);
+                            launch.draw(dropdownButtonText);
 
+                            if (isDropdownVisible) {
+                                for (size_t i = 0; i < menuItemShapes.size(); ++i) {
+                                    launch.draw(menuItemShapes[i]);
+                                    launch.draw(menuItems[i]);
+                                }
+                            }
                             launch.clear(pink);
                             launch.draw(track);
                             launch.draw(handle);
