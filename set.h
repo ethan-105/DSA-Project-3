@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <queue>
 #include "data.h"
 
 using namespace std;
@@ -57,6 +58,8 @@ public:
 	CrimeReport* rotateLeft(CrimeReport* report);
 	CrimeReport* rotateRight(CrimeReport* report);
 
+	bool inSet(CrimeReport* head, Data data);
+
 	void printTree()
 	{
 		printer(head);
@@ -65,8 +68,8 @@ public:
 	{
 		if (head != nullptr)
 		{
-			cout << head->data.caseNum << endl;
 			printer(head->lchild);
+			cout << head->data.caseNum << endl;
 			printer(head->rchild);
 		}
 	}
@@ -239,4 +242,44 @@ Set::CrimeReport* Set::rotateRight(CrimeReport* report)
 		temp->parent = report;
 	}
 	return newHead;
+}
+
+bool Set::inSet(CrimeReport* head, Data data)
+{
+	if (head == nullptr)
+	{
+		return false;
+	}
+
+	if (data.caseNum < head->data.caseNum)
+	{
+		return inSet(head->lchild, data);
+	}
+	else if (data.caseNum < head->data.caseNum)
+	{
+		return inSet(head->rchild, data);
+	}
+	else // Equal to val
+	{
+		return true;
+	}
+
+}
+
+Set setUnion(Set set1, Set set2)
+{
+	Set newSet = set1;
+	queue<Set::CrimeReport*> queue;
+	Set::CrimeReport* temp = set2.head;
+	queue.push(temp);
+	while (!queue.empty())
+	{
+		queue.push(temp->lchild);
+		queue.push(temp->rchild);
+		if (!newSet.Set::inSet(newSet.head, temp->data))
+		{
+			newSet.insert(temp->data.caseNum, temp->data.dateOCC, temp->data.timeOCC, temp->data.areaName);
+		}
+	}
+	return newSet;
 }
