@@ -16,9 +16,18 @@
 using namespace std; // certfied std'er B)
 
 int main() {
+
+    sf::Font myFont;
+    if (!myFont.loadFromFile("Dash-Horizon-Demo.otf")) {
+        cerr << "Failed to load font" << endl;
+        return -1;
+    }
+    sf::Color dropBgColor = sf::Color::White; // or any color you prefer
+
+    // Now pass these to the Buttons constructor
+    Buttons buttons(myFont, dropBgColor);
     Sprites sprites; // instantiate the structs
     Text text;
-    Buttons buttons;
 
     HashMap<Data> newMap;
     Set set;
@@ -63,7 +72,6 @@ int main() {
 
     //================================= START MAIN LOOP =======================================
 
-
     while (welcomeWindow.isOpen()) {
 
         if (clock.getElapsedTime().asMilliseconds() >= 25 && !isSubHeaderComplete) { // CLOCK FOR TEXT ANIMATION
@@ -89,10 +97,12 @@ int main() {
                     sf::Vector2i mousePos = sf::Mouse::getPosition(welcomeWindow);
 
                     if (buttons.beginButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        welcomeWindow.close();
 
                         sf::RenderWindow launch(sf::VideoMode(2400, 1800), "Comparator"); // create launch window here 
 
                         while (launch.isOpen()) { // launch window main loop 
+
 
                             sf::Event launchEvent;
 
@@ -117,7 +127,7 @@ int main() {
                                         //::Vector2i mousePos = sf::Mouse::getPosition(launch);
 
                                         // toggle drop menu visibility 
-                                        if (buttons.dropdownButton.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        if (buttons.triangle.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                             isDropdownVisible = !isDropdownVisible;
                                         }
                                     }
@@ -149,10 +159,12 @@ int main() {
 
                             sf::Vector2u windowSize = welcomeWindow.getSize();
                             sf::FloatRect spriteBounds = sprites.mapSprite.getGlobalBounds();
-                            sprites.mapSprite.setPosition((windowSize.x - spriteBounds.width) - 45, 45);
+                            sprites.mapSprite.setPosition((windowSize.x - spriteBounds.width), 45);
 
-                            launch.draw(buttons.dropdownButton);
+                            launch.draw(buttons.dropbg);
+                            //launch.draw(buttons.dropdownButton);
                             launch.draw(text.dropdownButtonText);
+                            launch.draw(buttons.triangle);
 
                             if (isDropdownVisible) {
                                 launch.draw(text.option1);
@@ -187,7 +199,6 @@ int main() {
         }
 
         welcomeWindow.display();
-
     }
 
     return 0;
