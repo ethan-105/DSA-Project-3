@@ -11,6 +11,7 @@
 #include "textbox.h"
 #include "buttonbox.h"
 #include "parsedcsv.h"
+#include <chrono>
 #include <climits>
 
 using namespace std; // certfied std'er B)
@@ -32,31 +33,38 @@ int main() {
     HashMap<Data> newMap;
     Set set;
     // testing set and map
-
     ParsedCSV CSVFile;
     CSVFile.parseFile("Trimmed_Crime_Data_from_2020_to_Present.csv");
     
     int total = CSVFile.csvData.size();
     int count = 0;
+    int percent = 0;
     cout << "Set loading:" << endl;
     cout << "[----------] " << count << "/" << total;
     for (unordered_map<string, string> datapoint : CSVFile.csvData)
     {
         count++;
-        cout << "\r";
-        cout << "[";
-        for (int i = 0; i < 10; i++)
+        if (((float)count / total >= (float)(percent) / 10))
         {
-            if ((float)count / total >= (float)(i + 1) / 10)
+            if (((float)count / total >= (float)(percent + 1) / 10))
             {
-                cout << "=";
-            }
-            else
-            {
-                cout << "-";
+                percent++; 
+                cout << "\r";
+                cout << "[";
+                for (int i = 0; i < 10; i++)
+                {
+                    if ((float)count / total >= (float)(i + 1) / 10)
+                    {
+                        cout << "=";
+                    }
+                    else
+                    {
+                        cout << "-";
+                    }
+                }
+                cout << "]" << count << "/" << total;
             }
         }
-        cout << "]" << count << "/" << total;
 
         string caseNum = datapoint["DR_NO"];
         string dateOCC = datapoint["DATE OCC"];
