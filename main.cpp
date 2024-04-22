@@ -25,12 +25,11 @@ int main() {
     }
     sf::Color dropBgColor = sf::Color::White; // or any color you prefer
 
-    // Now pass these to the Buttons constructor
-    Buttons buttons(myFont, dropBgColor);
+    
     Sprites sprites; // instantiate the structs
     //Text text;
 
-    HashMap<Data> newMap;
+    HashMap<HashMap<list<Data>*>*> theMap; // map of (region: (year: (caseNum: data)))
     Set set;
     Set set2;
     // testing set and map
@@ -85,9 +84,72 @@ int main() {
     //cout << newSet.size << endl;
 
     chrono::time_point<chrono::steady_clock> testFinal = chrono::high_resolution_clock::now();
-    const chrono::duration<double> elapsedTime{ testFinal - test };
-    cout << "Time taken for Set: " << elapsedTime.count() << endl;
+    chrono::duration<double> elapsedTime{ testFinal - test };
+    cout << "Time taken for Set Init: " << elapsedTime.count() << endl;
 
+
+
+    test = chrono::high_resolution_clock::now();
+    count = 0;
+    percent = 0;
+    cout << "Unordered Map loading:" << endl;
+    cout << "[----------] " << count << "/" << total;
+    for (unordered_map<string, string> datapoint : CSVFile.csvData)
+    {
+        count++;
+        if (((float)count / total >= (float)(percent) / 10))
+        {
+            if (((float)count / total >= (float)(percent + 1) / 10))
+            {
+                percent++;
+                cout << "\r";
+                cout << "[";
+                for (int i = 0; i < 10; i++)
+                {
+                    if ((float)count / total >= (float)(i + 1) / 10)
+                    {
+                        cout << "=";
+                    }
+                    else
+                    {
+                        cout << "-";
+                    }
+                }
+                cout << "]" << count << "/" << total;
+            }
+        }
+
+        string caseNum = datapoint["DR_NO"];
+        string dateOCC = datapoint["DATE OCC"];
+        string YEAR = dateOCC.substr(6, 4);
+        string crimeCode = datapoint["Crm Cd Desc"];
+        string areaName = datapoint["AREA NAME"];
+        Data data(caseNum, dateOCC, crimeCode, areaName);
+        bool hasYear = theMap.has(YEAR); 
+        if (!hasYear) {
+            HashMap<list<Data>*>* toEmplace= new HashMap<list<Data>*>{};
+            list<Data>* toEmplaceSub = new list<Data>{};
+            toEmplaceSub->push_back(data);
+            toEmplace->emplace(areaName, toEmplaceSub);
+            theMap.emplace(YEAR, toEmplace);
+        }
+        else {
+            bool hasArea = theMap.at(YEAR)->has(areaName);
+            if (!hasArea) {
+                list<Data>* toEmplaceSub = new list<Data>{};
+                toEmplaceSub->push_back(data);
+                theMap.at(YEAR)->emplace(areaName, toEmplaceSub);
+            }
+            else {
+                theMap.at(YEAR)->at(areaName)->push_back(data);
+            }
+        }
+    }
+    cout << endl;
+
+    testFinal = chrono::high_resolution_clock::now();
+    elapsedTime = testFinal - test ;
+    cout << "Time taken for Unordered Map Init: " << elapsedTime.count() << endl;
 
 
     int leftDate;
@@ -96,6 +158,9 @@ int main() {
     // create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
     ::ShowWindow(welcomeWindow.getSystemHandle(), SW_MAXIMIZE);
+   
+    sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
+    Buttons buttons(myFont, dropBgColor, windowSize);  // pass window size
 
     // start the initial window loop
     // this will be the "home base" window.
@@ -105,7 +170,7 @@ int main() {
 
     
     sf::Clock clock; // starts the clock
-    string fullText = "Welcome to the Los Angeles Crime Visualizer.\n\nIn this application, you will have the ability to compare and contrast the safety of\ndifferent areas in LA based off their reported crime rates and aggregated data over the past 4 years.\n";
+    string fullText = "Welcome. In this application, you will be able\nto compare and contrast different crime statistics\nin LA over the years 2020 - 2024.\nClick below to launch the visualizer."; 
     string displayedText;
     size_t textIndex = 0;
     bool isSubHeaderComplete = false;
@@ -118,7 +183,7 @@ int main() {
 
 
     //================================= START MAIN LOOP =======================================
-    sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
+    //sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
     Text text(windowSize);  // Pass window size
     while (welcomeWindow.isOpen()) {
 
@@ -134,20 +199,27 @@ int main() {
         }
 
         sf::Event event;
-
         while (welcomeWindow.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 welcomeWindow.close();
+            else if (event.type == sf::Event::Resized) {
+                // Update the window view to the new size of the window
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                welcomeWindow.setView(sf::View(visibleArea));
+
+                // Recalculate the positions and sizes of buttons
+                buttons.updatePositions(sf::Vector2u(event.size.width, event.size.height)); // Changed line
+            }
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    // get the position of the click
                     sf::Vector2i mousePos = sf::Mouse::getPosition(welcomeWindow);
-
-                    if (buttons.beginButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    if (text.begin.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        std::cout << "Begin text clicked, attempting to open launch window..." << std::endl;
                         welcomeWindow.close();
-
-                        sf::RenderWindow launch(sf::VideoMode::getDesktopMode(), "Comparator"); // create launch window here 
+                        sf::RenderWindow launch(sf::VideoMode::getDesktopMode(), "Comparator");
+                        
+                        // create launch window here 
                         // get window size to make positions proportional to the window
                         sf::Vector2u size = launch.getSize();
                         sf::Vector2f center(size.x / 2.f, size.y / 2.f);
@@ -217,6 +289,13 @@ int main() {
                                     if (buttons.handle2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                         isDraggingHandle2 = true;
                                     }
+                                    if (text.option1.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        text.option1.setFillColor(sf::Color::Black);
+                                    }
+                                    if (text.option2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        text.option3.setFillColor(sf::Color::Black);
+                                    }
+
 
                                     if (launchEvent.mouseButton.button == sf::Mouse::Left) {
                                         //::Vector2i mousePos = sf::Mouse::getPosition(launch);
@@ -299,12 +378,12 @@ int main() {
 
         // clear screen
         welcomeWindow.clear(pink);
-
+        //buttons.draw(welcomeWindow);
         // draw the window contents here
         welcomeWindow.draw(text.header);
         welcomeWindow.draw(text.subHeader);
         if (isSubHeaderComplete) { // Check if the subHeader text animation is complete
-            welcomeWindow.draw(buttons.beginButton);
+            //welcomeWindow.draw(buttons.beginButton);
             welcomeWindow.draw(text.begin);
         }
 
