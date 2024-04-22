@@ -118,7 +118,52 @@ int main() {
                     if (buttons.beginButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         welcomeWindow.close();
 
-                        sf::RenderWindow launch(sf::VideoMode(2400, 1800), "Comparator"); // create launch window here 
+                        sf::RenderWindow launch(sf::VideoMode::getDesktopMode(), "Comparator"); // create launch window here 
+                        // get window size to make positions proportional to the window
+                        sf::Vector2u size = launch.getSize();
+                        sf::Vector2f center(size.x / 2.f, size.y / 2.f);
+
+                       
+                        sprites.a1sprite.setOrigin(sprites.a1sprite.getLocalBounds().width / 2, sprites.a1sprite.getLocalBounds().height / 2);
+                        sprites.a1sprite.setPosition(center);
+
+                        sprites.b2sprite.setOrigin(sprites.b2sprite.getLocalBounds().width / 2, sprites.b2sprite.getLocalBounds().height / 2);
+                        sprites.b2sprite.setPosition(center);
+
+                        sprites.m2sprite.setOrigin(sprites.m2sprite.getLocalBounds().width / 2, sprites.m2sprite.getLocalBounds().height / 2);
+                        sprites.m2sprite.setPosition(center);
+
+                        sprites.m3sprite.setOrigin(sprites.m3sprite.getLocalBounds().width / 2, sprites.m3sprite.getLocalBounds().height / 2);
+                        sprites.m3sprite.setPosition(center);
+
+                        sprites.m4sprite.setOrigin(sprites.m4sprite.getLocalBounds().width / 2, sprites.m4sprite.getLocalBounds().height / 2);
+                        sprites.m4sprite.setPosition(center);
+
+                        sprites.m5sprite.setOrigin(sprites.m5sprite.getLocalBounds().width / 2, sprites.m5sprite.getLocalBounds().height / 2);
+                        sprites.m5sprite.setPosition(center);
+
+                        sprites.m6sprite.setOrigin(sprites.m6sprite.getLocalBounds().width / 2, sprites.m6sprite.getLocalBounds().height / 2);
+                        sprites.m6sprite.setPosition(center);
+
+                        sprites.m7sprite.setOrigin(sprites.m7sprite.getLocalBounds().width / 2, sprites.m7sprite.getLocalBounds().height / 2);
+                        sprites.m7sprite.setPosition(center);
+
+                        sprites.m9sprite.setOrigin(sprites.m9sprite.getLocalBounds().width / 2, sprites.m9sprite.getLocalBounds().height / 2);
+                        sprites.m9sprite.setPosition(center);
+
+                        sprites.m10sprite.setOrigin(sprites.m10sprite.getLocalBounds().width / 2, sprites.m10sprite.getLocalBounds().height / 2);
+                        sprites.m10sprite.setPosition(center);
+
+                        sprites.m11sprite.setOrigin(sprites.m11sprite.getLocalBounds().width / 2, sprites.m11sprite.getLocalBounds().height / 2);
+                        sprites.m11sprite.setPosition(center);
+
+                        sprites.m12sprite.setOrigin(sprites.m12sprite.getLocalBounds().width / 2, sprites.m12sprite.getLocalBounds().height / 2);
+                        sprites.m12sprite.setPosition(center);
+
+                        sprites.m14sprite.setOrigin(sprites.m14sprite.getLocalBounds().width / 2, sprites.m14sprite.getLocalBounds().height / 2);
+                        sprites.m14sprite.setPosition(center);
+
+
 
                         while (launch.isOpen()) { // launch window main loop 
 

@@ -15,7 +15,7 @@ struct Sprites {
         if (!a1.loadFromFile("los angeles counties a1.png"))
             cout << "a1 texture broken" << endl;
         a1sprite.setTexture(a1);
-
+     
         if (!b2.loadFromFile("los angeles counties b2.png"))
             cout << "b2 texture broken" << endl;
         b2sprite.setTexture(b2);
@@ -49,7 +49,6 @@ struct Sprites {
             cout << "7 broken" << endl;
         }
         m7sprite.setTexture(m7);
-
 
         if (!m9.loadFromFile("los angeles counties 9.png")) {
             cout << "9 broken" << endl;
