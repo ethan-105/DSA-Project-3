@@ -32,6 +32,7 @@ int main() {
 
     HashMap<Data> newMap;
     Set set;
+    Set set2;
     // testing set and map
     ParsedCSV CSVFile;
     CSVFile.parseFile("Trimmed_Crime_Data_from_2020_to_Present.csv");
@@ -72,9 +73,16 @@ int main() {
         string crimeCode = datapoint["Crm Cd Desc"];
         string areaName = datapoint["AREA NAME"];
         Data data = Data(caseNum, dateOCC, crimeCode, areaName);
-        set.insert(data);
+        if (count % 2 == 0)
+        {
+            set.insert(data);
+        }
+        set2.insert(data);
     }
     cout << endl;
+    //cout << set.size << " " << set2.size << endl;
+    //Set newSet = setIntersect(set, set2);
+    //cout << newSet.size << endl;
 
     chrono::time_point<chrono::steady_clock> testFinal = chrono::high_resolution_clock::now();
     const chrono::duration<double> elapsedTime{ testFinal - test };

@@ -1,7 +1,9 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <list>
 #include <queue>
+#include <stack>
 #include "data.h"
 
 using namespace std;
@@ -72,42 +74,85 @@ public:
 			printer(head->rchild);
 		}
 	}
+	void getInorder(Set::CrimeReport* head, list<Set::CrimeReport*> &list);
 };
 
 Set::CrimeReport* Set::insertHelper(CrimeReport* head, Data data)
 {
 	bool conflict = false;
 
-	// Make sure head exists
-	if (head == nullptr)
-	{
-		return new CrimeReport(data);
-	}
-	else if (data.caseNum < head->data.caseNum) // if caseNum < head
-	{
-		// insert left
-		head->lchild = Set::insertHelper(head->lchild, data);
-		head->lchild->parent = head;
-		// Check for color conflict if this is not the head
-		if (this->head != head)
-		{
-			if (head->lchild->color == 'R' && head->color == 'R')
-			{
-				conflict = true; // fix color after rotations
+	//// Make sure head exists
+	//if (head == nullptr)
+	//{
+	//	return new CrimeReport(data);
+	//}
+	//else if (data.caseNum < head->data.caseNum) // if caseNum < head
+	//{
+	//	// insert left
+	//	head->lchild = Set::insertHelper(head->lchild, data);
+	//	head->lchild->parent = head;
+	//	// Check for color conflict if this is not the head
+	//	if (this->head != head)
+	//	{
+	//		if (head->lchild->color == 'R' && head->color == 'R')
+	//		{
+	//			conflict = true; // fix color after rotations
+	//		}
+	//	}
+	//}
+	//else if (data.caseNum > head->data.caseNum)// caseNum > head
+	//{
+	//	// insert right
+	//	head->rchild = insertHelper(head->rchild, data);
+	//	head->rchild->parent = head;
+	//	// Check for color conflict if this is not the head
+	//	if (this->head != head)
+	//	{
+	//		if (head->rchild->color == 'R' && head->color == 'R')
+	//		{
+	//			conflict = true; // fix color after rotations
+	//		}
+	//	}
+	//}
+	std::stack<CrimeReport*> nodeStack;
+	nodeStack.push(head);
+
+	while (!nodeStack.empty()) {
+		CrimeReport* head = nodeStack.top();
+		nodeStack.pop();
+
+		if (data.caseNum < head->data.caseNum) {
+			if (head->lchild == nullptr) {
+				head->lchild = new CrimeReport(data);
+				head->lchild->parent = head;
+				if (this->head != head)
+				{
+					if (head->lchild->color == 'R' && head->color == 'R')
+					{
+						conflict = true; // fix color after rotations
+					}
+				}
+				break;  // Stop loop after insertion
+			}
+			else {
+				nodeStack.push(head->lchild);
 			}
 		}
-	}
-	else // caseNum > head
-	{
-		// insert right
-		head->rchild = insertHelper(head->rchild, data);
-		head->rchild->parent = head;
-		// Check for color conflict if this is not the head
-		if (this->head != head)
-		{
-			if (head->rchild->color == 'R' && head->color == 'R')
-			{
-				conflict = true; // fix color after rotations
+		else if (data.caseNum > head->data.caseNum) {
+			if (head->rchild == nullptr) {
+				head->rchild = new CrimeReport(data);
+				head->rchild->parent = head;
+				if (this->head != head)
+				{
+					if (head->rchild->color == 'R' && head->color == 'R')
+					{
+						conflict = true; // fix color after rotations
+					}
+				}
+				break;  // Stop loop after insertion
+			}
+			else {
+				nodeStack.push(head->rchild);
 			}
 		}
 	}
@@ -243,6 +288,16 @@ Set::CrimeReport* Set::rotateRight(CrimeReport* report)
 	return newHead;
 }
 
+void Set::getInorder(Set::CrimeReport* head, list<Set::CrimeReport*> &list)
+{
+	if (head != nullptr)
+	{
+		getInorder(head->lchild, list);
+		list.emplace_back(head);
+		getInorder(head->rchild, list);
+	}
+}
+
 bool Set::inSet(CrimeReport* head, Data data)
 {
 	if (head == nullptr)
@@ -298,31 +353,37 @@ Set setUnion(Set set1, Set set2)
 Set setIntersect(Set set1, Set set2)
 {
 	Set newSet;
-	Set::CrimeReport* temp = set1.head;
-	Set::CrimeReport* temp2 = set2.head;
-	bool done = false;
-	while (temp->lchild != nullptr)
+	list<Set::CrimeReport*> list1;
+	set1.getInorder(set1.head, list1);
+	list<Set::CrimeReport*> list2;
+	set2.getInorder(set2.head, list2);
+	list<Set::CrimeReport*>::iterator it = list1.begin();
+	list<Set::CrimeReport*>::iterator it2 = list2.begin();
+	int count = 0;
+	for (int i = 0; i < max(list1.size(), list2.size()); i++)
 	{
-		temp = temp->lchild;
-	}
-	while (temp->rchild != nullptr)
-	{
-		temp = temp->rchild;
-	}
-	while (!done)
-	{
-		if (temp > temp2)
+		count++;
+		if ((*it)->data.caseNum > (*it2)->data.caseNum && it2 != list2.end())
 		{
-			temp2 = temp2->parent;
+			it2++;
 		}
-		else if (temp < temp2)
+		else if ((*it)->data.caseNum < (*it2)->data.caseNum && it != list1.end())
 		{
-			temp = temp->parent;
+			it++;
 		}
-		else // Equal
-		{
-			newSet.insert(temp->data);
+		else if ((*it)->data.caseNum == (*it2)->data.caseNum) // Same value
+		{	
+			newSet.insert((*it)->data);
+			if (it != list1.end())
+			{
+				it++;
+			}
+			if (it2 != list2.end())
+			{
+				it2++;
+			}
 		}
 	}
+	cout << count << endl;
 	return newSet;
 }
