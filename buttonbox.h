@@ -44,10 +44,10 @@ struct Buttons {
         dropbg.setPosition(50, 250);
 
         // Setup for triangle
-        sf::FloatRect textBounds = dropdownButton.getGlobalBounds(); // Adjust based on actual dropdown text position
+        sf::FloatRect textBounds = dropbg.getGlobalBounds(); // Adjust based on actual dropdown text position
         triangle.setPointCount(3);
-        float triangleBaseHeight = 20.f;  // Height of the triangle
-        float triangleBaseWidth = 20.f;   // Width of the triangle base
+        float triangleBaseHeight = 60.f;  // Height of the triangle
+        float triangleBaseWidth = 60.f;   // Width of the triangle base
         float triangleX = textBounds.left + textBounds.width + 10;  // 10 pixels padding from text
         float triangleY = dropbg.getPosition().y + (dropbg.getSize().y / 2) - (triangleBaseHeight / 2);
         triangle.setPoint(0, sf::Vector2f(triangleX, triangleY));

@@ -24,6 +24,7 @@ struct Text {
         setupText(option1, "Murder", 70, sf::Color::White, { 50, 450 });
         setupText(option2, "Theft", 70, sf::Color::White, { 50, 550 });
         setupText(option3, "Assault", 70, sf::Color::White, { 50, 650 });
+        setupText(dropdownButtonText, "Select a Crime Type", 100, sf::Color::Black, { 50, 250 }); 
     }
 
     void setupText(sf::Text& text, const std::string& str, unsigned int charSize, sf::Color color, sf::Vector2f pos) {
