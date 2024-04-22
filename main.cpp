@@ -36,6 +36,7 @@ int main() {
     ParsedCSV CSVFile;
     CSVFile.parseFile("Trimmed_Crime_Data_from_2020_to_Present.csv");
     
+    chrono::time_point<chrono::steady_clock> test = chrono::high_resolution_clock::now();
     int total = CSVFile.csvData.size();
     int count = 0;
     int percent = 0;
@@ -73,6 +74,13 @@ int main() {
         Data data = Data(caseNum, dateOCC, crimeCode, areaName);
         set.insert(data);
     }
+    cout << endl;
+
+    chrono::time_point<chrono::steady_clock> testFinal = chrono::high_resolution_clock::now();
+    const chrono::duration<double> elapsedTime{ testFinal - test };
+    cout << "Time taken for Set: " << elapsedTime.count() << endl;
+
+
 
     int leftDate;
     int rightDate;
