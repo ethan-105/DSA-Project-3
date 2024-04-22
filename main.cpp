@@ -51,7 +51,8 @@ int main() {
     int cnt = 0;
 
     HashMap<Data> newMap;
-    Set newSet;
+    Set set1;
+    Set set2;
     // testing set and map
 
     while (getline(file, line))
@@ -63,20 +64,30 @@ int main() {
 
         // Date reported
         string dateRptd = vect[1].substr(0, 10); // just get date info
-        cout << dateRptd << " ";
+        //cout << dateRptd << " ";
 
         // Date Occurred
         string dateOCC = vect[2].substr(0, 10); // just get date info
-        cout << dateOCC << " ";
+        //cout << dateOCC << " ";
         // Time Occurred
         string timeOCC = vect[3];
-        cout << timeOCC << " ";
+        //cout << timeOCC << " ";
         // Area Name
         string areaName = vect[5];
-        cout << areaName << " ";
+        //cout << areaName << " ";
 
         string crimeType = vect[9];
-        cout << crimeType << endl;
+        //cout << crimeType << endl;
+
+        if (stoi(dateOCC.substr(0, 2)) < 7)
+        {
+            set1.insert(caseNum, dateOCC, timeOCC, areaName);
+        }
+        else
+        {
+            set2.insert(caseNum, dateOCC, timeOCC, areaName);
+        }
+
         /*
         if (cnt < 100) {
             Data data(caseNum, dateOCC, timeOCC, areaName);
@@ -89,6 +100,10 @@ int main() {
         }
         */
     }
+    cout << set1.size << endl;
+    cout << set2.size << endl;
+    Set newSet = setUnion(set1, set2);
+    cout << newSet.size << endl;
     /*
     cout << "Set:" << endl;
     newSet.printTree();

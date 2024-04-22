@@ -255,7 +255,7 @@ bool Set::inSet(CrimeReport* head, Data data)
 	{
 		return inSet(head->lchild, data);
 	}
-	else if (data.caseNum < head->data.caseNum)
+	else if (data.caseNum > head->data.caseNum)
 	{
 		return inSet(head->rchild, data);
 	}
@@ -274,12 +274,24 @@ Set setUnion(Set set1, Set set2)
 	queue.push(temp);
 	while (!queue.empty())
 	{
-		queue.push(temp->lchild);
-		queue.push(temp->rchild);
+		if (temp->lchild != nullptr)
+		{
+			queue.push(temp->lchild);
+		}
+		if (temp->rchild != nullptr)
+		{
+			queue.push(temp->rchild);
+		}
 		if (!newSet.Set::inSet(newSet.head, temp->data))
 		{
 			newSet.insert(temp->data.caseNum, temp->data.dateOCC, temp->data.timeOCC, temp->data.areaName);
 		}
+		queue.pop();
+		if (queue.empty())
+		{
+			break;
+		}
+		temp = queue.front();
 	}
 	return newSet;
 }
