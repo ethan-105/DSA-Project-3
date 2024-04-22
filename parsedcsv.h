@@ -44,12 +44,14 @@ struct ParsedCSV {
         string line;
         getline(file, line);
         headers = readCSVLine(line);
+        vector<char> spin = { '|', '/', '-', '\\' };
+        cout << "Loading CSV file..." << endl;
         while (getline(file, line))
         {
-            if (csvData.size() % 10000 == 0) {
+            if (csvData.size() % (109000 / 10) == 0) {
                 // output progress
-                int blocks = csvData.size() / 10000;
-                for (int i = 0; i < 12; i++) {
+                int blocks = csvData.size() / (109000/10);
+                for (int i = 0; i < 15; i++) {
                     cout << "\b";
                 }
                 cout << "[";
@@ -61,7 +63,11 @@ struct ParsedCSV {
                         cout << "-";
                     }
                 }
-                cout << "]";
+                cout << "]  ";
+            }
+            if (csvData.size() % 1000 == 0) {
+                int index = (csvData.size() / 1000) % 4;
+                cout << "\b" << spin[index];
             }
             list<string> someList = readCSVLine(line);
             if (someList.size() != headers.size()) {
