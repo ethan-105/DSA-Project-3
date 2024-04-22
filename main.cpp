@@ -1,9 +1,37 @@
 #include <SFML/Graphics.hpp>
+#include <windows.h>
 #include <vector>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include "data.h"
+#include "set.h"
+#include "hashmap.h"
 
+vector<string> readCSVLine(string &line) {
+    size_t index = 0;
+    vector<string> output;
+    while (true) {
+        size_t endIndex = index;
+        string nextToAdd = "";
+        if (line[index] == '"') {
+            endIndex = line.find('"', index + 1);
+            output.push_back(line.substr(index + 1, (endIndex - index - 1)));
+            if (endIndex == string::npos) {
+                break;
+            }
+            index = endIndex + 2;
+            continue;
+        }
+        endIndex = line.find(',', index + 1);
+        if (endIndex == string::npos) {
+            break;
+        }
+        output.push_back(line.substr(index, (endIndex - index)));
+        index = endIndex + 1;
+    }
+    return output;
+}
 
 using namespace std; // certfied std'er B)
 
@@ -14,28 +42,62 @@ int main() {
     ifstream file("Trimmed_Crime_Data_from_2020_to_Present.csv");
     string line;
     getline(file, line); // Clear header
+    int cnt = 0;
+
+    HashMap<Data> newMap;
+    Set newSet;
+    // testing set and map
+
     while (getline(file, line))
     {
+        vector<string> vect = readCSVLine(line);
+
+        string caseNum = vect[0];
+        //cout << caseNum << " ";
+
         // Date reported
-        size_t firstDelim = line.find(',');
-        size_t secondDelim = line.find(',', firstDelim + 1);
-        string dateRptd = line.substr(firstDelim + 1, 10);
+        string dateRptd = vect[1].substr(0, 10); // just get date info
         cout << dateRptd << " ";
+
         // Date Occurred
-        string dateOCC = line.substr(secondDelim + 1, 10);
+        string dateOCC = vect[2].substr(0, 10); // just get date info
         cout << dateOCC << " ";
         // Time Occurred
-        size_t thirdDelim = line.find(',', secondDelim + 1);
-        string timeOCC = line.substr(thirdDelim + 1, 4);
+        string timeOCC = vect[3];
         cout << timeOCC << " ";
         // Area Name
-        size_t fifthDelim = line.find(',', line.find(',', thirdDelim + 1) + 1);
-        size_t sixthDelim = line.find(',', fifthDelim + 1);
-        string areaName = line.substr(fifthDelim + 1, (sixthDelim - (fifthDelim + 1)));
-        cout << areaName << endl;
+        string areaName = vect[5];
+        cout << areaName << " ";
+
+        string crimeType = vect[9];
+        cout << crimeType << endl;
+        /*
+        if (cnt < 100) {
+            Data data(caseNum, dateOCC, timeOCC, areaName);
+            newSet.insert(caseNum, dateOCC, timeOCC, areaName);
+            newMap.insert(data.caseNum, data);
+            cnt++;
+        }
+        else {
+            break;
+        }
+        */
     }
+    /*
+    cout << "Set:" << endl;
+    newSet.printTree();
+    cout << "Total entries: " << newSet.size << endl;
+    cout << endl << "Map:" << endl;
+    for (HashMap<Data>::ItemPair pair : newMap.getIterable()) {
+        Data data = pair.value;
+        cout << data.caseNum << " " << data.dateOCC << " " << data.timeOCC << " " << data.areaName << endl;
+    }
+    cout << "Total entries: " << newMap.getSize() << endl;
+    */
+
     // create initial welcome window ! 
-    sf::RenderWindow welcomeWindow(sf::VideoMode(2400, 1800), "Los Angeles Crime Visualizer");
+    sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
+    ::ShowWindow(welcomeWindow.getSystemHandle(), SW_MAXIMIZE);
 
     // start the initial window loop
     // this will be the "home base" window.
@@ -89,70 +151,7 @@ int main() {
     sf::RectangleShape beginButton(sf::Vector2f(135.f, 60.f));
     beginButton.setPosition(45, 470);
     beginButton.setFillColor(sf::Color::White);
-    //beginButton.setOutlineColor(sf::Color::Black); 
-    //beginButton.setOutlineThickness(0.5f); 
 
-    sf::RectangleShape curtain(sf::Vector2f(2400, 1800));
-    curtain.setFillColor(pink);
-
-
-    sf::RectangleShape setButton(sf::Vector2f(250.f, 50.f)); // size of the first button
-    setButton.setPosition(900, 200); // position of the button
-    setButton.setFillColor(sf::Color::White);// fill color 
-    setButton.setOutlineColor(sf::Color::Black); // outline color 
-    setButton.setOutlineThickness(2.f); // outline weight 
-
-    sf::RectangleShape hashButton(sf::Vector2f(300.f, 50.f)); // size of the second button
-    hashButton.setPosition(900, 300); // posiiton of the button
-    hashButton.setFillColor(sf::Color::White);
-    hashButton.setOutlineColor(sf::Color::Black);
-    hashButton.setOutlineThickness(2.f);
-
-    // create text labels for buttons
-    sf::Text label1, label2;
-    label1.setFont(font);
-    label1.setString("Run Set Visualizer");
-    label1.setCharacterSize(32);
-    label1.setFillColor(sf::Color::Black);
-    label1.setPosition(110, 210); // adjust position to fit within button1
-
-    label2.setFont(font);
-    label2.setString("Run HashMap Visualizer");
-    label2.setCharacterSize(32);
-    label2.setFillColor(sf::Color::Black);
-    label2.setPosition(110, 310); // adjust position to fit within button2
-
-
-    //center text onto the buttons so it looks prettier <3 
-
-    sf::FloatRect setButtonBounds = setButton.getGlobalBounds();
-    sf::FloatRect label1Bounds = label1.getGlobalBounds();
-    label1.setPosition(
-        setButtonBounds.left + (setButtonBounds.width - label1Bounds.width) / 2,
-        setButtonBounds.top + (setButtonBounds.height - label1Bounds.height) / 2
-    );
-
-    // Center text on hashButton
-    sf::FloatRect hashButtonBounds = hashButton.getGlobalBounds();
-    sf::FloatRect label2Bounds = label2.getGlobalBounds();
-    label2.setPosition(
-        hashButtonBounds.left + (hashButtonBounds.width - label2Bounds.width) / 2,
-        hashButtonBounds.top + (hashButtonBounds.height - label2Bounds.height) / 2
-    );
-
-    // This circle setup should be outside the loop, so it's only created once
-    sf::CircleShape circle(100.f); // circle with a radius of 100 pixels
-    circle.setFillColor(sf::Color::Magenta); // fill color green
-    circle.setPosition(150, 100); // position of the circle in the window
-    circle.setOutlineThickness(3.f); // thickness of circle's outline
-    circle.setOutlineColor(sf::Color::White); // outline color white
-
-
-    sf::CircleShape circle2(50.f);
-    circle2.setFillColor(sf::Color::Cyan);
-    circle2.setPosition(20, 45);
-    circle2.setOutlineThickness(3.f);
-    circle2.setOutlineColor(sf::Color::White);
 
     //bool beggining = false;
     // ================================ sprites ==================================
@@ -262,30 +261,62 @@ int main() {
 
     // track for the slider
     sf::RectangleShape track(sf::Vector2f(1300, 10));
-    track.setPosition(500, 1500); // temp position for testing 
+    track.setPosition(500, 1495); // temp position for testing 
     track.setFillColor(sf::Color::White);
 
     // handle for the slider
-    sf::CircleShape handle(15); // radius of 15px
-    handle.setPosition(500, 1485); // set initial position to start of the track
-    handle.setFillColor(sf::Color::Cyan);
+    sf::CircleShape handle1(10); // radius of 15px
+    handle1.setPosition(500, 1490); // set initial position to start of the track
+    handle1.setFillColor(sf::Color::Black);
 
-    bool isDragging = false; // tracks whether the handle is being dragged
+    // handle for the slider
+    sf::CircleShape handle2(10); // radius of 15px
+    handle2.setPosition(1800, 1490); // set initial position to start of the track
+    handle2.setFillColor(sf::Color::Black);
+
+    bool isDraggingHandle1 = false;
+    bool isDraggingHandle2 = false;
 
 
+    sf::Text y1;
+    y1.setFont(font);
+    y1.setFillColor(sf::Color::White);
+    y1.setCharacterSize(38);
+    y1.setString("2020");
+    y1.setPosition(500, 1510);
 
+    sf::Text y2;
+    y2.setFont(font);
+    y2.setFillColor(sf::Color::White);
+    y2.setCharacterSize(38);
+    y2.setString("2021");
+    y2.setPosition(900, 1510);
 
+    sf::Text y3;
+    y3.setFont(font);
+    y3.setFillColor(sf::Color::White);
+    y3.setCharacterSize(38);
+    y3.setString("2022");
+    y3.setPosition(1300, 1510);
+
+    sf::Text y4;
+    y4.setFont(font);
+    y4.setFillColor(sf::Color::White);
+    y4.setCharacterSize(38);
+    y4.setString("2023");
+    y4.setPosition(1700, 1510);
 
     //======================menu select==============================
 
     // drop down button
-    sf::RectangleShape dropdownButton(sf::Vector2f(200.f, 50.f)); // size of the dropdown button
-    dropdownButton.setPosition(50, 600); // position of the dropdown button
-    dropdownButton.setFillColor(sf::Color::White);
+    sf::RectangleShape dropdownButton(sf::Vector2f(500.f, 200.f)); // size of the dropdown button
+    dropdownButton.setPosition(50, 300); // position of the dropdown button
+    //dropdownButton.setOutlineColor(sf::Color::White);
+
     sf::Text dropdownButtonText;
     dropdownButtonText.setFont(font);
-    dropdownButtonText.setString("Select an aspect to compare");
-    dropdownButtonText.setCharacterSize(24);
+    dropdownButtonText.setString("Select a Crime Type");
+    dropdownButtonText.setCharacterSize(80);
     dropdownButtonText.setFillColor(sf::Color::Black);
     sf::FloatRect dropdownButtonBounds = dropdownButton.getGlobalBounds();
     dropdownButtonText.setPosition(
@@ -294,38 +325,53 @@ int main() {
     );
 
     // menu items
-    vector<sf::Text> menuItems;
-    vector<string> itemLabels = { "Option 1", "Option 2", "Option 3" };
-    vector<sf::RectangleShape> menuItemShapes;
+    sf::Text option1;
+    // set the font to the text
+    option1.setFont(font);
+    // set the string to display
+    option1.setString("Murder");
+    // set the character size
+    option1.setCharacterSize(70); // in pixels
+    // set the color of the text
+    option1.setFillColor(sf::Color::White);
+    // set the position of the text
+    option1.setPosition(50, 450); // x and y coordinates on the window
+
+
+    sf::Text option2;
+    // set the font to the text
+    option2.setFont(font);
+    // set the string to display
+    option2.setString("Theft");
+    // set the character size
+    option2.setCharacterSize(70); // in pixels
+    // set the color of the text
+    option2.setFillColor(sf::Color::White);
+    // set the position of the text
+    option2.setPosition(50, 550); // x and y coordinates on the window
+
+    sf::Text option3;
+    // set the font to the text
+    option3.setFont(font);
+    // set the string to display
+    option3.setString("Assault");
+    // set the character size
+    option3.setCharacterSize(70); // in pixels
+    // set the color of the text
+    option3.setFillColor(sf::Color::White);
+    // set the position of the text
+    option3.setPosition(50, 650); // x and y coordinates on the window
+
     bool isDropdownVisible = false; // tracks visibility of dropdown items
 
-    for (size_t i = 0; i < itemLabels.size(); ++i) {
-        sf::Text itemText;
-        itemText.setFont(font);
-        itemText.setString(itemLabels[i]);
-        itemText.setCharacterSize(24);
-        itemText.setFillColor(sf::Color::Black);
-        menuItems.push_back(itemText);
-
-        sf::RectangleShape itemShape(sf::Vector2f(200.f, 50.f));
-        itemShape.setPosition(50, 650 + i * 50); // stacks items vertically
-        itemShape.setFillColor(sf::Color::White);
-        menuItemShapes.push_back(itemShape);
-
-        // center the text in each item
-        itemText.setPosition(
-            itemShape.getPosition().x + (itemShape.getSize().x - itemText.getLocalBounds().width) / 2,
-            itemShape.getPosition().y + (itemShape.getSize().y - itemText.getLocalBounds().height) / 2 - itemText.getLocalBounds().height * 0.5
-        );
-    }
 
 
-
+    //================================= START MAIN LOOP =======================================
 
 
     while (welcomeWindow.isOpen()) {
 
-        if (clock.getElapsedTime().asMilliseconds() >= 25 && !isSubHeaderComplete) {
+        if (clock.getElapsedTime().asMilliseconds() >= 25 && !isSubHeaderComplete) { // CLOCK FOR TEXT ANIMATION
             if (textIndex < fullText.length()) {
                 displayedText += fullText[textIndex++];
                 subHeader.setString(displayedText);
@@ -337,25 +383,23 @@ int main() {
         }
 
         sf::Event event;
+
         while (welcomeWindow.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 welcomeWindow.close();
-
-
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     // get the position of the click
                     sf::Vector2i mousePos = sf::Mouse::getPosition(welcomeWindow);
 
-
                     if (beginButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
 
-                        sf::RenderWindow launch(sf::VideoMode(2400, 1800), "Comparator");
+                        sf::RenderWindow launch(sf::VideoMode(2400, 1800), "Comparator"); // create launch window here 
 
-                        while (launch.isOpen()) {
+                        while (launch.isOpen()) { // launch window main loop 
+
                             sf::Event launchEvent;
-
 
                             while (launch.pollEvent(launchEvent)) {
                                 if (launchEvent.type == sf::Event::Closed) {
@@ -364,55 +408,49 @@ int main() {
                                 }
 
                                 if (launchEvent.type == sf::Event::MouseButtonPressed) {
-                                    if (handle.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
-                                        isDragging = true; // begin dragging the handle
+
+                                    // check if the click is on handle1
+                                    if (handle1.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        isDraggingHandle1 = true;
+                                    }
+                                    // check if the click is on handle2
+                                    if (handle2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        isDraggingHandle2 = true;
                                     }
 
-                                    if (event.mouseButton.button == sf::Mouse::Left) {
-                                        sf::Vector2i mousePos = sf::Mouse::getPosition(launch);
+                                    if (launchEvent.mouseButton.button == sf::Mouse::Left) {
+                                        //::Vector2i mousePos = sf::Mouse::getPosition(launch);
 
-                                        // Toggle dropdown visibility
-                                        if (dropdownButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                                        // toggle drop menu visibility 
+                                        if (dropdownButton.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                             isDropdownVisible = !isDropdownVisible;
-                                        }
-
-                                        // Check for dropdown item selection only if visible
-                                        if (isDropdownVisible) {
-                                            for (int i = 0; i < menuItemShapes.size(); ++i) {
-                                                if (menuItemShapes[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                                                    std::cout << "Selected: " << itemLabels[i] << std::endl;
-                                                    isDropdownVisible = false; // Optionally close the menu after selection
-                                                    break;
-                                                }
-                                            }
                                         }
                                     }
                                 }
 
-
                                 if (launchEvent.type == sf::Event::MouseButtonReleased) {
-                                    isDragging = false; // stop dragging the handle
+                                    isDraggingHandle1 = false;
+                                    isDraggingHandle2 = false;
                                 }
 
                                 // handles mouse movement
                                 if (launchEvent.type == sf::Event::MouseMoved) {
-                                    if (isDragging) {
-                                        float newX = launchEvent.mouseMove.x - handle.getRadius();
-                                        // make sure that the handle stays within the track's bounds 
-                                        if (newX < track.getPosition().x) {
-                                            newX = track.getPosition().x;
+                                    if (isDraggingHandle1 || isDraggingHandle2) {
+                                        float newX = launchEvent.mouseMove.x - (isDraggingHandle1 ? handle1.getRadius() : handle2.getRadius());
+                                        newX = max(newX, track.getPosition().x);
+                                        newX = min(newX, track.getPosition().x + track.getSize().x - 2 * (isDraggingHandle1 ? handle1.getRadius() : handle2.getRadius()));
+
+                                        if (isDraggingHandle1) {
+                                            handle1.setPosition(newX, handle1.getPosition().y);
                                         }
-                                        else if (newX > track.getPosition().x + track.getSize().x - 2 * handle.getRadius()) {
-                                            newX = track.getPosition().x + track.getSize().x - 2 * handle.getRadius();
+                                        if (isDraggingHandle2) {
+                                            handle2.setPosition(newX, handle2.getPosition().y);
                                         }
-                                        handle.setPosition(newX, handle.getPosition().y);
                                     }
                                 }
-
-
-
                             }
 
+                            launch.clear(pink);
 
                             mapSprite.setScale(1.5f, 1.5f);
 
@@ -420,64 +458,24 @@ int main() {
                             sf::FloatRect spriteBounds = mapSprite.getGlobalBounds();
                             mapSprite.setPosition((windowSize.x - spriteBounds.width) - 45, 45);
 
-                            launch.draw(dropdownButton);
+                            //launch.draw(dropdownButton);
                             launch.draw(dropdownButtonText);
 
                             if (isDropdownVisible) {
-                                for (size_t i = 0; i < menuItemShapes.size(); ++i) {
-                                    launch.draw(menuItemShapes[i]);
-                                    launch.draw(menuItems[i]);
-                                }
+                                launch.draw(option1);
+                                launch.draw(option2);
+                                launch.draw(option3);
                             }
-                            launch.clear(pink);
+
                             launch.draw(track);
-                            launch.draw(handle);
+                            launch.draw(handle1);
+                            launch.draw(handle2);
+                            launch.draw(y1);
+                            launch.draw(y2);
+                            launch.draw(y3);
+                            launch.draw(y4);
                             launch.draw(mapSprite);
                             launch.display();
-                        }
-                    }
-                    // check if click is within button1 bounds
-                    if (setButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        sf::RenderWindow setVisualizer(sf::VideoMode(1600, 1200), "Set Visualizer");
-
-                        // The new window's loop
-                        while (setVisualizer.isOpen()) {
-                            sf::Event setVisEvent;
-                            while (setVisualizer.pollEvent(setVisEvent)) {
-                                if (setVisEvent.type == sf::Event::Closed)
-                                    setVisualizer.close();
-                            }
-
-                            setVisualizer.clear(); // clear with default color (black)
-
-                            // Draw the circle here
-                            setVisualizer.draw(circle);
-                            setVisualizer.draw(circle2);
-
-                            setVisualizer.display(); // end the current frame
-                        }
-                    }
-
-                    // check if click is within button2 bounds
-                    if (hashButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        // open new window or perform action for button2
-                        sf::RenderWindow hashMapVisualizer(sf::VideoMode(1600, 1200), "Window 2");
-
-                        // the hasmap window's loop
-                        while (hashMapVisualizer.isOpen()) {
-                            sf::Event hashVisEvent;
-                            while (hashMapVisualizer.pollEvent(hashVisEvent)) {
-                                if (hashVisEvent.type == sf::Event::Closed)
-                                    hashMapVisualizer.close();
-                            }
-
-                            hashMapVisualizer.clear(); // clear with default color (black)
-
-                            // draw the circle here
-                            hashMapVisualizer.draw(circle);
-                            hashMapVisualizer.draw(circle2);
-
-                            hashMapVisualizer.display(); // end the current frame
                         }
                     }
                 }
@@ -487,7 +485,6 @@ int main() {
         // clear screen
         welcomeWindow.clear(pink);
 
-
         // draw the window contents here
         welcomeWindow.draw(header);
         welcomeWindow.draw(subHeader);
@@ -495,16 +492,6 @@ int main() {
             welcomeWindow.draw(beginButton);
             welcomeWindow.draw(begin);
         }
-        // welcomeWindow.draw(setButton);
-        // welcomeWindow.draw(hashButton);
-        // welcomeWindow.draw(label1);
-        // welcomeWindow.draw(label2);
-
-        // update the window and display it
-
-        //if (beggining = true) {
-        //    welcomeWindow.draw(curtain); 
-        //}
 
         welcomeWindow.display();
 

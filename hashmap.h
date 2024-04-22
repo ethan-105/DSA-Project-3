@@ -3,59 +3,73 @@
 #include <string>
 #include <list>
 #include <vector>
-#include "data.h"
+//#include "data.h"
 
 using namespace std;
 
-int hashData(Data datapoint) {
-	// It's pseudo-hashing.
-	// This could be valid, since it is unique to each data point
-	// and it should be evenly distributed among a large range
-	// (there will be gaps due to the system of formatting, but
-	// it should still keep bucket counts and collisions low)
-	return stoi(datapoint.caseNum);
+unsigned int hashData(string key) {
+	// If key is able to be turned to a number, just stoi it
+	try {
+		return stoi(key);
+	} catch (invalid_argument e) {
+		// otherwise, do some fun stuff with bit shifting to mess around
+		// Smaller keys are risky, but long ones should work quite well
+		// expecting to overflow quite often, but should be alright to drop biggest bit
+		unsigned int result;
+		for (int i = 0; i < key.size(); i++) {
+			int shift = (5*i) % (8 * 3); // int is 4 bits
+			int val = int(key[i]);
+			result += val << shift;
+		}
+		return result;
+	}
 }
 
+template<typename T>
 class HashMap {
+public:
+	struct ItemPair {
+		string key;
+		T value;
+		ItemPair(string key, T value) : key(key), value(value) {};
+	};
+
+private:
 	float load_factor = 0.75;
-	int capacity = 1;
-	int entryCount = 0;
+	unsigned int capacity = 1;
+	unsigned int entryCount = 0;
 	// Using lists so appending is O(1) time, and because we don't need random access 
 	// (but we do need iterability, which is fine)
-	list<Data>* storage = nullptr;
+	list<ItemPair>* storage = nullptr;
 
 public:
 	HashMap() {
 		capacity = 1;
 		entryCount = 0;
 		// Array of lists of data
-		storage = new list<Data>[capacity];
+		storage = new list<ItemPair>[capacity];
 	}
-	HashMap(vector<Data> given_datapoints) {
-		capacity = 1;
-		entryCount = 0;
-		storage = new list<Data>[capacity];
-		for (Data datapoint : given_datapoints) {
-			insert(datapoint);
-		}
+	~HashMap() {
+		delete storage;
 	}
 	void rehash() {
-		int oldCapacity = capacity;
+		unsigned int oldCapacity = capacity;
 		capacity *= 2;
-		list<Data>* newStorage = new list<Data>[capacity];
+		list<ItemPair>* newStorage = new list<ItemPair>[capacity];
 		for (int i = 0; i < oldCapacity; i++) {
-			list<Data> oldList = storage[i];
-			for (Data datapoint : oldList) {
-				newStorage[hashData(datapoint) % capacity].push_back(datapoint);
+			list<ItemPair> oldList = storage[i];
+			for (ItemPair pair : oldList) {
+				newStorage[hashData(pair.key) % capacity].push_back(pair);
 			}
 		}
-		delete storage;
+		//delete storage; // Complains when I do this
 		storage = newStorage;
 	}
-	void insert(Data datapoint) {
+	void insert(string key, T value) {
 		// First insert into the hashmap
-		int newItemIndex = hashData(datapoint) % capacity;
-		storage[newItemIndex].push_back(datapoint);
+		unsigned int newItemIndex = hashData(key) % capacity;
+		ItemPair pair(key, value);
+		storage[newItemIndex].push_back(pair);
 		entryCount++;
 
 		// Check if need to rehash
@@ -64,14 +78,15 @@ public:
 		}
 	}
 	// can iterate using any way to iterate over the list now B)
-	list<Data>& getIterable() {
-		list<Data> result;
+	list<ItemPair> getIterable() {
+		list<ItemPair> result;
 		for (int i = 0; i < capacity; i++) {
-			list<Data> oldList = storage[i];
-			for (Data datapoint : oldList) {
-				result.push_back(datapoint);
+			list<ItemPair> oldList = storage[i];
+			for (ItemPair pair : oldList) {
+				result.push_back(pair);
 			}
 		}
 		return result;
 	}
+	unsigned int getSize() { return entryCount; }
 };
