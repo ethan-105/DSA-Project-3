@@ -9,10 +9,12 @@
 #include "hashmap.h"
 #include "spritebox.h"
 #include "textbox.h"
+#include "buttonbox.h"
+#include <climits>
 
-Sprites sprites; // instantiate the sprites class 
-
+Sprites sprites; // instantiate the structs
 Text text; 
+Buttons buttons; 
 
 vector<string> readCSVLine(string &line) {
     size_t index = 0;
@@ -42,7 +44,7 @@ vector<string> readCSVLine(string &line) {
 using namespace std; // certfied std'er B)
 
 int main() {
-    std::cout << "Hello world!" << std::endl;
+    //cout << "Hello world!" << endl;
 
     // this is just a starting file.
     ifstream file("Trimmed_Crime_Data_from_2020_to_Present.csv");
@@ -63,20 +65,20 @@ int main() {
 
         // Date reported
         string dateRptd = vect[1].substr(0, 10); // just get date info
-        cout << dateRptd << " ";
+        //cout << dateRptd << " ";
 
         // Date Occurred
         string dateOCC = vect[2].substr(0, 10); // just get date info
-        cout << dateOCC << " ";
+        //cout << dateOCC << " ";
         // Time Occurred
         string timeOCC = vect[3];
-        cout << timeOCC << " ";
+        //cout << timeOCC << " ";
         // Area Name
         string areaName = vect[5];
-        cout << areaName << " ";
+        //cout << areaName << " ";
 
         string crimeType = vect[9];
-        cout << crimeType << endl;
+        //cout << crimeType << endl;
         /*
         if (cnt < 100) {
             Data data(caseNum, dateOCC, timeOCC, areaName);
@@ -113,47 +115,16 @@ int main() {
 
     
     sf::Clock clock; // starts the clock
-    string fullText = "Welcome to the Los Angeles Crime Visualizer.\n\nIn this application, you will have the ability to compare and contrast the safety of\ndifferent areas in LA based off their reported crime rates and aggregated data over the past 20 years.\n";
+    string fullText = "Welcome to the Los Angeles Crime Visualizer.\n\nIn this application, you will have the ability to compare and contrast the safety of\ndifferent areas in LA based off their reported crime rates and aggregated data over the past 4 years.\n";
     string displayedText;
     size_t textIndex = 0;
     bool isSubHeaderComplete = false;
 
 
-    sf::RectangleShape beginButton(sf::Vector2f(135.f, 60.f));
-    beginButton.setPosition(45, 470);
-    beginButton.setFillColor(sf::Color::White);
-
-
-    // track for the slider
-    sf::RectangleShape track(sf::Vector2f(1300, 10));
-    track.setPosition(500, 1495); // temp position for testing 
-    track.setFillColor(sf::Color::White);
-
-    // handle for the slider
-    sf::CircleShape handle1(10); // radius of 15px
-    handle1.setPosition(500, 1490); // set initial position to start of the track
-    handle1.setFillColor(sf::Color::Black);
-
-    // handle for the slider
-    sf::CircleShape handle2(10); // radius of 15px
-    handle2.setPosition(1800, 1490); // set initial position to start of the track
-    handle2.setFillColor(sf::Color::Black);
 
     bool isDraggingHandle1 = false;
     bool isDraggingHandle2 = false;
-
-    
-
-    //======================menu select==============================
-
-    // drop down button
-    sf::RectangleShape dropdownButton(sf::Vector2f(500.f, 200.f)); // size of the dropdown button
-    dropdownButton.setPosition(50, 300); // position of the dropdown button
-    //dropdownButton.setOutlineColor(sf::Color::White);
-
-
     bool isDropdownVisible = false; // tracks visibility of dropdown items
-
 
 
     //================================= START MAIN LOOP =======================================
@@ -183,7 +154,7 @@ int main() {
                     // get the position of the click
                     sf::Vector2i mousePos = sf::Mouse::getPosition(welcomeWindow);
 
-                    if (beginButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    if (buttons.beginButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
 
                         sf::RenderWindow launch(sf::VideoMode(2400, 1800), "Comparator"); // create launch window here 
 
@@ -200,11 +171,11 @@ int main() {
                                 if (launchEvent.type == sf::Event::MouseButtonPressed) {
 
                                     // check if the click is on handle1
-                                    if (handle1.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                    if (buttons.handle1.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                         isDraggingHandle1 = true;
                                     }
                                     // check if the click is on handle2
-                                    if (handle2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                    if (buttons.handle2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                         isDraggingHandle2 = true;
                                     }
 
@@ -212,7 +183,7 @@ int main() {
                                         //::Vector2i mousePos = sf::Mouse::getPosition(launch);
 
                                         // toggle drop menu visibility 
-                                        if (dropdownButton.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        if (buttons.dropdownButton.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                             isDropdownVisible = !isDropdownVisible;
                                         }
                                     }
@@ -226,15 +197,15 @@ int main() {
                                 // handles mouse movement
                                 if (launchEvent.type == sf::Event::MouseMoved) {
                                     if (isDraggingHandle1 || isDraggingHandle2) {
-                                        float newX = launchEvent.mouseMove.x - (isDraggingHandle1 ? handle1.getRadius() : handle2.getRadius());
-                                        newX = max(newX, track.getPosition().x);
-                                        newX = min(newX, track.getPosition().x + track.getSize().x - 2 * (isDraggingHandle1 ? handle1.getRadius() : handle2.getRadius()));
+                                        float newX = launchEvent.mouseMove.x - (isDraggingHandle1 ? buttons.handle1.getRadius() : buttons.handle2.getRadius());
+                                        newX = max(newX, buttons.track.getPosition().x);
+                                        newX = min(newX, buttons.track.getPosition().x + buttons.track.getSize().x - 2 * (isDraggingHandle1 ? buttons.handle1.getRadius() : buttons.handle2.getRadius()));
 
                                         if (isDraggingHandle1) {
-                                            handle1.setPosition(newX, handle1.getPosition().y);
+                                            buttons.handle1.setPosition(newX, buttons.handle1.getPosition().y);
                                         }
                                         if (isDraggingHandle2) {
-                                            handle2.setPosition(newX, handle2.getPosition().y);
+                                            buttons.handle2.setPosition(newX, buttons.handle2.getPosition().y);
                                         }
                                     }
                                 }
@@ -246,7 +217,7 @@ int main() {
                             sf::FloatRect spriteBounds = sprites.mapSprite.getGlobalBounds();
                             sprites.mapSprite.setPosition((windowSize.x - spriteBounds.width) - 45, 45);
 
-                            //launch.draw(dropdownButton);
+                            launch.draw(buttons.dropdownButton);
                             launch.draw(text.dropdownButtonText);
 
                             if (isDropdownVisible) {
@@ -255,9 +226,9 @@ int main() {
                                 launch.draw(text.option3);
                             }
 
-                            launch.draw(track);
-                            launch.draw(handle1);
-                            launch.draw(handle2);
+                            launch.draw(buttons.track);
+                            launch.draw(buttons.handle1);
+                            launch.draw(buttons.handle2);
                             launch.draw(text.y1);
                             launch.draw(text.y2);
                             launch.draw(text.y3);
@@ -277,7 +248,7 @@ int main() {
         welcomeWindow.draw(text.header);
         welcomeWindow.draw(text.subHeader);
         if (isSubHeaderComplete) { // Check if the subHeader text animation is complete
-            welcomeWindow.draw(beginButton);
+            welcomeWindow.draw(buttons.beginButton);
             welcomeWindow.draw(text.begin);
         }
 
