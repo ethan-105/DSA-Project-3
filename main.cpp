@@ -30,11 +30,21 @@ int main() {
     Text text;
 
     HashMap<Data> newMap;
-    Set newSet;
+    Set set;
     // testing set and map
 
     ParsedCSV CSVFile;
     CSVFile.parseFile("Trimmed_Crime_Data_from_2020_to_Present.csv");
+    
+    for (unordered_map<string, string> datapoint : CSVFile.csvData)
+    {
+        string caseNum = datapoint["DR_NO"];
+        string dateOCC = datapoint["DATE OCC"];
+        string crimeCode = datapoint["Crm Cd Desc"];
+        string areaName = datapoint["AREA NAME"];
+        set.insert(caseNum, dateOCC, crimeCode, areaName);
+    }
+    cout << set.size << endl;
 
     // create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
