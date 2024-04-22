@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "buttonbox.h"
+
+//Buttons buttons; 
 
 struct Text {
     sf::Font font;
@@ -12,6 +15,7 @@ struct Text {
         }
 
         setupText(header, "Los Angeles Crime Visualizer", 100, sf::Color::White, { 50, 50 });
+        setupText(subHeader, "Welcome. In this application, you will be able to compare and constrast different\ncrime statistics in LA over the years 2020-2024.\nClick below to launch the visualizer.", 60, sf::Color::White, { 50, 200 }); 
         setupText(begin, "Begin", 46, sf::Color::Black, { 50, 475 });
         setupText(y1, "2020", 38, sf::Color::White, { 500, 1510 });
         setupText(y2, "2021", 38, sf::Color::White, { 900, 1510 });
