@@ -36,15 +36,34 @@ int main() {
     ParsedCSV CSVFile;
     CSVFile.parseFile("Trimmed_Crime_Data_from_2020_to_Present.csv");
     
+    int total = CSVFile.csvData.size();
+    int count = 0;
+    cout << "Set loading:" << endl;
+    cout << "[----------] " << count << "/" << total;
     for (unordered_map<string, string> datapoint : CSVFile.csvData)
     {
+        count++;
+        cout << "\r";
+        cout << "[";
+        for (int i = 0; i < 10; i++)
+        {
+            if ((float)count / total >= (float)(i + 1) / 10)
+            {
+                cout << "=";
+            }
+            else
+            {
+                cout << "-";
+            }
+        }
+        cout << "]" << count << "/" << total;
+
         string caseNum = datapoint["DR_NO"];
         string dateOCC = datapoint["DATE OCC"];
         string crimeCode = datapoint["Crm Cd Desc"];
         string areaName = datapoint["AREA NAME"];
         set.insert(caseNum, dateOCC, crimeCode, areaName);
     }
-    cout << set.size << endl;
 
     // create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
