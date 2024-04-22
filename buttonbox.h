@@ -10,50 +10,64 @@ struct Buttons {
     sf::RectangleShape dropbg;  // Background for dropdown
     sf::ConvexShape triangle;   // Indicator triangle for dropdown
 
-    // Constructor modified to take window size
-    Buttons(const sf::Font& font, const sf::Color& dropBgColor, sf::Vector2u windowSize) :
-        //beginButton(sf::Vector2f(135.f, 60.f)), // Size relative to design preference
-        track(sf::Vector2f(windowSize.x * 0.8f, 10.f)),  // Width is 80% of window width
-        handle1(30.f), // Radius in pixels, static size
-        handle2(30.f), // Radius in pixels, static size
-        dropdownButton(sf::Vector2f(windowSize.x * 0.25f, 200.f)),  // Width is 50% of window width
-        dropbg(sf::Vector2f(windowSize.x * 0.25f, 125.f)) // Width is 90% of window width
-    {
-        // Setup for beginButton
-        beginButton.setPosition(windowSize.x * 0.05f, windowSize.y * 0.9f); // Position at 5% from the left and 90% from the top
+    // Constructor that takes window size
+    Buttons(const sf::Font& font, const sf::Color& dropBgColor, sf::Vector2u windowSize) {
+        setupButtons(windowSize);
+    }
+
+    void setupButtons(sf::Vector2u windowSize) {
+        // Set up each element with initial positions and sizes relative to the window size
+        beginButton.setSize(sf::Vector2f(windowSize.x * 0.15f, 60.f));
+        beginButton.setPosition(windowSize.x * 0.05f, windowSize.y * 0.85f);
         beginButton.setFillColor(sf::Color::White);
 
-        // Setup for track
-        track.setPosition(windowSize.x * 0.1f, windowSize.y - 50); // Center horizontally and 50 pixels from the bottom
+        track.setSize(sf::Vector2f(windowSize.x * 0.8f, 10.f));
+        track.setPosition(windowSize.x * 0.1f, windowSize.y - 50);
         track.setFillColor(sf::Color::White);
 
-        // Setup for handles
-        handle1.setPosition(track.getPosition().x, track.getPosition().y + track.getSize().y / 2); // Starting point of the track
-        handle2.setPosition(track.getPosition().x + track.getSize().x - handle2.getRadius() * 2, track.getPosition().y + track.getSize().y / 2); // End point of the track
+        handle1.setRadius(30.f);
+        handle1.setPosition(track.getPosition().x, track.getPosition().y - handle1.getRadius());
         handle1.setFillColor(sf::Color::Black);
+
+        handle2.setRadius(30.f);
+        handle2.setPosition(track.getPosition().x + track.getSize().x - handle2.getRadius() * 2, track.getPosition().y - handle2.getRadius());
         handle2.setFillColor(sf::Color::Black);
 
-        // Setup for dropdownButton
-        dropdownButton.setPosition(windowSize.x * 0.25f, windowSize.y); // Center horizontally and 10% from the top
+        dropdownButton.setSize(sf::Vector2f(windowSize.x * 0.25f, 50.f));
+        dropdownButton.setPosition(windowSize.x * 0.05f, windowSize.y * 0.1f);
+        dropdownButton.setFillColor(sf::Color::White);
 
-        // Setup for dropbg
-        dropbg.setFillColor(dropBgColor);
+        dropbg.setSize(sf::Vector2f(windowSize.x * 0.25f, 125.f));
+        dropbg.setPosition(windowSize.x * 0.05f, windowSize.y * 0.15f);
+        dropbg.setFillColor(sf::Color::White);
         dropbg.setOutlineThickness(3.0f);
         dropbg.setOutlineColor(sf::Color::Black);
-        dropbg.setPosition(windowSize.x * 0.05f, windowSize.y * 0.2f); // 5% from left and 20% from top
 
-        // Setup for triangle
-        sf::FloatRect textBounds = dropbg.getGlobalBounds(); // Adjust based on dropbg position
         triangle.setPointCount(3);
-        float triangleBaseHeight = 60.f;  // Height of the triangle
-        float triangleBaseWidth = 60.f;   // Width of the triangle base
-        float triangleX = textBounds.left + textBounds.width + 10;  // 10 pixels padding from text
-        float triangleY = dropbg.getPosition().y + (dropbg.getSize().y / 2) - (triangleBaseHeight / 2);
-        triangle.setPoint(0, sf::Vector2f(triangleX, triangleY));
-        triangle.setPoint(1, sf::Vector2f(triangleX + triangleBaseWidth, triangleY));
-        triangle.setPoint(2, sf::Vector2f(triangleX + triangleBaseWidth / 2, triangleY + triangleBaseHeight));
+        float triangleBaseWidth = 30.f;
+        float triangleBaseHeight = 15.f;
+        triangle.setPoint(0, sf::Vector2f(0, 0));
+        triangle.setPoint(1, sf::Vector2f(triangleBaseWidth, 0));
+        triangle.setPoint(2, sf::Vector2f(triangleBaseWidth / 2, triangleBaseHeight));
+        triangle.setPosition(dropbg.getPosition().x + dropbg.getSize().x + 5, dropbg.getPosition().y + (dropbg.getSize().y - triangleBaseHeight) / 2);
         triangle.setFillColor(sf::Color::White);
         triangle.setOutlineThickness(2.f);
         triangle.setOutlineColor(sf::Color::White);
+    }
+
+    void updatePositions(sf::Vector2u windowSize) {
+        // Update positions based on new window size
+        setupButtons(windowSize);
+    }
+
+    void draw(sf::RenderWindow& window) {
+        // Draw all buttons
+        window.draw(beginButton);
+        window.draw(track);
+        window.draw(handle1);
+        window.draw(handle2);
+        window.draw(dropdownButton);
+        window.draw(dropbg);
+        window.draw(triangle);
     }
 };

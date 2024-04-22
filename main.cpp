@@ -131,6 +131,14 @@ int main() {
         while (welcomeWindow.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 welcomeWindow.close();
+            else if (event.type == sf::Event::Resized) {
+                // Update the window view to the new size of the window
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                welcomeWindow.setView(sf::View(visibleArea));
+
+                // Recalculate the positions and sizes of buttons
+                buttons.updatePositions(sf::Vector2u(event.size.width, event.size.height)); // Changed line
+            }
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
@@ -292,7 +300,7 @@ int main() {
 
         // clear screen
         welcomeWindow.clear(pink);
-
+        //buttons.draw(welcomeWindow);
         // draw the window contents here
         welcomeWindow.draw(text.header);
         welcomeWindow.draw(text.subHeader);
