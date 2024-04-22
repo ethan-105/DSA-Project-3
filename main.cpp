@@ -7,6 +7,12 @@
 #include "data.h"
 #include "set.h"
 #include "hashmap.h"
+#include "spritebox.h"
+#include "textbox.h"
+
+Sprites sprites; // instantiate the sprites class 
+
+Text text; 
 
 vector<string> readCSVLine(string &line) {
     size_t index = 0;
@@ -105,158 +111,17 @@ int main() {
     // and it will link to the two visualizers and the data algorithms in the background. 
     sf::Color pink(240, 128, 168);
 
-    // load a font
-    sf::Font font;
-    if (!font.loadFromFile("Dash-Horizon-Demo.otf"))
-    {
-        // add error handling later 
-    }
-
-    // create a text object
-    sf::Text header;
-    // set the font to the text
-    header.setFont(font);
-    // set the string to display
-    header.setString("Los Angeles Crime Visualizer");
-    // set the character size
-    header.setCharacterSize(100); // in pixels
-    // set the color of the text
-    header.setFillColor(sf::Color::White);
-    // set the position of the text
-    header.setPosition(50, 50); // x and y coordinates on the window
-
-
-    sf::Text subHeader;
-    subHeader.setFont(font);
-    subHeader.setCharacterSize(38);
-    subHeader.setFillColor(sf::Color::White);
-    subHeader.setPosition(50, 250);
-
-    sf::Clock clock; // Starts the clock
+    
+    sf::Clock clock; // starts the clock
     string fullText = "Welcome to the Los Angeles Crime Visualizer.\n\nIn this application, you will have the ability to compare and contrast the safety of\ndifferent areas in LA based off their reported crime rates and aggregated data over the past 20 years.\n";
     string displayedText;
     size_t textIndex = 0;
     bool isSubHeaderComplete = false;
 
 
-    // change this so that it only displays once the subheader text is done typing
-    sf::Text begin;
-    begin.setFont(font);
-    begin.setCharacterSize(46);
-    begin.setFillColor(sf::Color::Black);
-    begin.setPosition(50, 475);
-    begin.setString("Begin");
-
-
     sf::RectangleShape beginButton(sf::Vector2f(135.f, 60.f));
     beginButton.setPosition(45, 470);
     beginButton.setFillColor(sf::Color::White);
-
-
-    //bool beggining = false;
-    // ================================ sprites ==================================
-
-    sf::Texture laMap;
-    if (!laMap.loadFromFile("los angeles counties.png")) {
-        cout << "map broken" << endl;
-    }
-
-    sf::Sprite mapSprite;
-    mapSprite.setTexture(laMap);
-
-    sf::Texture a1;
-    if (!a1.loadFromFile("los angeles counties a1.png")) {
-        cout << "a broken" << endl;
-    }
-    sf::Sprite a1sprite;
-    a1sprite.setTexture(a1);
-
-    sf::Texture b2;
-    if (!b2.loadFromFile("los angeles counties b2.png")) {
-        cout << "b broken" << endl;
-    }
-    sf::Sprite b2sprite;
-    b2sprite.setTexture(b2);
-
-    sf::Texture m2;
-    if (!m2.loadFromFile("los angeles counties 2.png")) {
-        cout << "2 broken" << endl;
-    }
-    sf::Sprite m2sprite;
-    m2sprite.setTexture(m2);
-
-    sf::Texture m3;
-    if (!m3.loadFromFile("los angeles counties 3.png")) {
-        cout << "3 broken" << endl;
-    }
-    sf::Sprite m3sprite;
-    m3sprite.setTexture(m3);
-
-    sf::Texture m4;
-    if (!m4.loadFromFile("los angeles counties 4.png")) {
-        cout << "4 broken" << endl;
-    }
-    sf::Sprite m4sprite;
-    m4sprite.setTexture(m4);
-
-    sf::Texture m5;
-    if (!m5.loadFromFile("los angeles counties 5.png")) {
-        cout << "5 broken" << endl;
-    }
-    sf::Sprite m5sprite;
-    m5sprite.setTexture(m5);
-
-    sf::Texture m6;
-    if (!m6.loadFromFile("los angeles counties 6.png")) {
-        cout << "6 broken" << endl;
-    }
-    sf::Sprite m6sprite;
-    m6sprite.setTexture(m6);
-
-    sf::Texture m7;
-    if (!m7.loadFromFile("los angeles counties 7.png")) {
-        cout << "7 broken" << endl;
-    }
-    sf::Sprite m7sprite;
-    m7sprite.setTexture(m7);
-
-    sf::Texture m9;
-    if (!m9.loadFromFile("los angeles counties 9.png")) {
-        cout << "9 broken" << endl;
-    }
-    sf::Sprite m9sprite;
-    m9sprite.setTexture(m9);
-
-    sf::Texture m10;
-    if (!m10.loadFromFile("los angeles counties 10.png")) {
-        cout << "10 broken" << endl;
-    }
-    sf::Sprite m10sprite;
-    m10sprite.setTexture(m10);
-
-    sf::Texture m11;
-    if (!m11.loadFromFile("los angeles counties 11.png")) {
-        cout << "11 broken" << endl;
-    }
-    sf::Sprite m11sprite;
-    m11sprite.setTexture(m11);
-
-    sf::Texture m12;
-    if (!m12.loadFromFile("los angeles counties 12.png")) {
-        cout << "12 broken" << endl;
-    }
-    sf::Sprite m12sprite;
-    m12sprite.setTexture(m12);
-
-    sf::Texture m14;
-    if (!m14.loadFromFile("los angeles counties 14.png")) {
-        cout << "14 broken" << endl;
-    }
-    sf::Sprite m14sprite;
-    m14sprite.setTexture(m14);
-
-
-    //=================end sprites ========================================
 
 
     // track for the slider
@@ -277,34 +142,7 @@ int main() {
     bool isDraggingHandle1 = false;
     bool isDraggingHandle2 = false;
 
-
-    sf::Text y1;
-    y1.setFont(font);
-    y1.setFillColor(sf::Color::White);
-    y1.setCharacterSize(38);
-    y1.setString("2020");
-    y1.setPosition(500, 1510);
-
-    sf::Text y2;
-    y2.setFont(font);
-    y2.setFillColor(sf::Color::White);
-    y2.setCharacterSize(38);
-    y2.setString("2021");
-    y2.setPosition(900, 1510);
-
-    sf::Text y3;
-    y3.setFont(font);
-    y3.setFillColor(sf::Color::White);
-    y3.setCharacterSize(38);
-    y3.setString("2022");
-    y3.setPosition(1300, 1510);
-
-    sf::Text y4;
-    y4.setFont(font);
-    y4.setFillColor(sf::Color::White);
-    y4.setCharacterSize(38);
-    y4.setString("2023");
-    y4.setPosition(1700, 1510);
+    
 
     //======================menu select==============================
 
@@ -313,54 +151,6 @@ int main() {
     dropdownButton.setPosition(50, 300); // position of the dropdown button
     //dropdownButton.setOutlineColor(sf::Color::White);
 
-    sf::Text dropdownButtonText;
-    dropdownButtonText.setFont(font);
-    dropdownButtonText.setString("Select a Crime Type");
-    dropdownButtonText.setCharacterSize(80);
-    dropdownButtonText.setFillColor(sf::Color::Black);
-    sf::FloatRect dropdownButtonBounds = dropdownButton.getGlobalBounds();
-    dropdownButtonText.setPosition(
-        dropdownButtonBounds.left + (dropdownButtonBounds.width - dropdownButtonText.getLocalBounds().width) / 2,
-        dropdownButtonBounds.top + (dropdownButtonBounds.height - dropdownButtonText.getLocalBounds().height) / 2
-    );
-
-    // menu items
-    sf::Text option1;
-    // set the font to the text
-    option1.setFont(font);
-    // set the string to display
-    option1.setString("Murder");
-    // set the character size
-    option1.setCharacterSize(70); // in pixels
-    // set the color of the text
-    option1.setFillColor(sf::Color::White);
-    // set the position of the text
-    option1.setPosition(50, 450); // x and y coordinates on the window
-
-
-    sf::Text option2;
-    // set the font to the text
-    option2.setFont(font);
-    // set the string to display
-    option2.setString("Theft");
-    // set the character size
-    option2.setCharacterSize(70); // in pixels
-    // set the color of the text
-    option2.setFillColor(sf::Color::White);
-    // set the position of the text
-    option2.setPosition(50, 550); // x and y coordinates on the window
-
-    sf::Text option3;
-    // set the font to the text
-    option3.setFont(font);
-    // set the string to display
-    option3.setString("Assault");
-    // set the character size
-    option3.setCharacterSize(70); // in pixels
-    // set the color of the text
-    option3.setFillColor(sf::Color::White);
-    // set the position of the text
-    option3.setPosition(50, 650); // x and y coordinates on the window
 
     bool isDropdownVisible = false; // tracks visibility of dropdown items
 
@@ -374,7 +164,7 @@ int main() {
         if (clock.getElapsedTime().asMilliseconds() >= 25 && !isSubHeaderComplete) { // CLOCK FOR TEXT ANIMATION
             if (textIndex < fullText.length()) {
                 displayedText += fullText[textIndex++];
-                subHeader.setString(displayedText);
+                text.subHeader.setString(displayedText);
                 clock.restart();
             }
             else {
@@ -452,29 +242,27 @@ int main() {
 
                             launch.clear(pink);
 
-                            mapSprite.setScale(1.5f, 1.5f);
-
                             sf::Vector2u windowSize = welcomeWindow.getSize();
-                            sf::FloatRect spriteBounds = mapSprite.getGlobalBounds();
-                            mapSprite.setPosition((windowSize.x - spriteBounds.width) - 45, 45);
+                            sf::FloatRect spriteBounds = sprites.mapSprite.getGlobalBounds();
+                            sprites.mapSprite.setPosition((windowSize.x - spriteBounds.width) - 45, 45);
 
                             //launch.draw(dropdownButton);
-                            launch.draw(dropdownButtonText);
+                            launch.draw(text.dropdownButtonText);
 
                             if (isDropdownVisible) {
-                                launch.draw(option1);
-                                launch.draw(option2);
-                                launch.draw(option3);
+                                launch.draw(text.option1);
+                                launch.draw(text.option2);
+                                launch.draw(text.option3);
                             }
 
                             launch.draw(track);
                             launch.draw(handle1);
                             launch.draw(handle2);
-                            launch.draw(y1);
-                            launch.draw(y2);
-                            launch.draw(y3);
-                            launch.draw(y4);
-                            launch.draw(mapSprite);
+                            launch.draw(text.y1);
+                            launch.draw(text.y2);
+                            launch.draw(text.y3);
+                            launch.draw(text.y4);
+                            launch.draw(sprites.mapSprite);
                             launch.display();
                         }
                     }
@@ -486,11 +274,11 @@ int main() {
         welcomeWindow.clear(pink);
 
         // draw the window contents here
-        welcomeWindow.draw(header);
-        welcomeWindow.draw(subHeader);
+        welcomeWindow.draw(text.header);
+        welcomeWindow.draw(text.subHeader);
         if (isSubHeaderComplete) { // Check if the subHeader text animation is complete
             welcomeWindow.draw(beginButton);
-            welcomeWindow.draw(begin);
+            welcomeWindow.draw(text.begin);
         }
 
         welcomeWindow.display();
