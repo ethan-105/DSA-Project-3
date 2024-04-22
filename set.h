@@ -39,9 +39,8 @@ public:
 
 	}
 
-	void insert(string caseNum, string dateOCC, string crimeCode, string areaName)
+	void insert(Data data)
 	{
-		Data data = Data(caseNum, dateOCC, crimeCode, areaName);
 		this->size++;
 		if (head != nullptr)
 		{
@@ -284,7 +283,7 @@ Set setUnion(Set set1, Set set2)
 		}
 		if (!newSet.Set::inSet(newSet.head, temp->data))
 		{
-			newSet.insert(temp->data.caseNum, temp->data.dateOCC, temp->data.crimeCode, temp->data.areaName);
+			newSet.insert(temp->data);
 		}
 		queue.pop();
 		if (queue.empty())
