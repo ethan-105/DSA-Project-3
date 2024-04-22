@@ -295,11 +295,6 @@ Set setUnion(Set set1, Set set2)
 	return newSet;
 }
 
-Set::CrimeReport* inorderHelper(Set::CrimeReport* head)
-{
-
-}
-
 Set setIntersect(Set set1, Set set2)
 {
 	Set newSet;
