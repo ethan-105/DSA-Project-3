@@ -10,7 +10,7 @@ struct Sprites {
         if (!laMap.loadFromFile("los angeles counties.png"))
             cout << "map broken" << endl;
         mapSprite.setTexture(laMap);
-        mapSprite.setScale(1.5f, 1.5f);
+        mapSprite.setScale(1.0f, 1.0f);
 
         if (!a1.loadFromFile("los angeles counties a1.png"))
             cout << "a1 texture broken" << endl;
