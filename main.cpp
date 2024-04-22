@@ -28,7 +28,7 @@ int main() {
     // Now pass these to the Buttons constructor
     Buttons buttons(myFont, dropBgColor);
     Sprites sprites; // instantiate the structs
-    Text text;
+    //Text text;
 
     HashMap<Data> newMap;
     Set set;
@@ -110,7 +110,8 @@ int main() {
 
 
     //================================= START MAIN LOOP =======================================
-
+    sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
+    Text text(windowSize);  // Pass window size
     while (welcomeWindow.isOpen()) {
 
         if (clock.getElapsedTime().asMilliseconds() >= 25 && !isSubHeaderComplete) { // CLOCK FOR TEXT ANIMATION
