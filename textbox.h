@@ -24,7 +24,7 @@ struct Text {
         setupText(option1, "Murder", 70, sf::Color::White, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.25f));
         setupText(option2, "Theft", 70, sf::Color::White, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.35f));
         setupText(option3, "Assault", 70, sf::Color::White, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.45f));
-        setupText(dropdownButtonText, "Select a Crime Type", 100, sf::Color::Black, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.55f));
+        setupText(dropdownButtonText, "Select a Crime Type", 100, sf::Color::Black, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.15f));
     }
 
     void setupText(sf::Text& text, const std::string& str, unsigned int charSize, sf::Color color, sf::Vector2f pos) {

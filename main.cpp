@@ -297,7 +297,7 @@ int main() {
         welcomeWindow.draw(text.header);
         welcomeWindow.draw(text.subHeader);
         if (isSubHeaderComplete) { // Check if the subHeader text animation is complete
-            welcomeWindow.draw(buttons.beginButton);
+            //welcomeWindow.draw(buttons.beginButton);
             welcomeWindow.draw(text.begin);
         }
 
