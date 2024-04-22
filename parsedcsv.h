@@ -47,7 +47,21 @@ struct ParsedCSV {
         while (getline(file, line))
         {
             if (csvData.size() % 10000 == 0) {
-                cout << csvData.size() << endl;
+                // output progress
+                int blocks = csvData.size() / 10000;
+                for (int i = 0; i < 12; i++) {
+                    cout << "\b";
+                }
+                cout << "[";
+                for (int i = 0; i < 10; i++) {
+                    if (i < blocks) {
+                        cout << "=";
+                    }
+                    else {
+                        cout << "-";
+                    }
+                }
+                cout << "]";
             }
             vector<string> vect = readCSVLine(line);
             if (vect.size() != headers.size()) {
@@ -59,6 +73,7 @@ struct ParsedCSV {
             }
             csvData.push_back(toPush);
         }
+        cout << endl;
     }
 };
 

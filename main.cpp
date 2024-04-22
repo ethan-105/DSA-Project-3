@@ -10,98 +10,22 @@
 #include "spritebox.h"
 #include "textbox.h"
 #include "buttonbox.h"
+#include "parsedcsv.h"
 #include <climits>
-
-Sprites sprites; // instantiate the structs
-Text text; 
-Buttons buttons; 
-
-vector<string> readCSVLine(string &line) {
-    size_t index = 0;
-    vector<string> output;
-    while (true) {
-        size_t endIndex = index;
-        string nextToAdd = "";
-        if (line[index] == '"') {
-            endIndex = line.find('"', index + 1);
-            output.push_back(line.substr(index + 1, (endIndex - index - 1)));
-            if (endIndex == string::npos) {
-                break;
-            }
-            index = endIndex + 2;
-            continue;
-        }
-        endIndex = line.find(',', index + 1);
-        if (endIndex == string::npos) {
-            break;
-        }
-        output.push_back(line.substr(index, (endIndex - index)));
-        index = endIndex + 1;
-    }
-    return output;
-}
 
 using namespace std; // certfied std'er B)
 
 int main() {
-    //cout << "Hello world!" << endl;
-
-    // this is just a starting file.
-    ifstream file("Trimmed_Crime_Data_from_2020_to_Present.csv");
-    string line;
-    getline(file, line); // Clear header
-    int cnt = 0;
+    Sprites sprites; // instantiate the structs
+    Text text;
+    Buttons buttons;
 
     HashMap<Data> newMap;
     Set newSet;
     // testing set and map
 
-    while (getline(file, line))
-    {
-        vector<string> vect = readCSVLine(line);
-
-        string caseNum = vect[0];
-        //cout << caseNum << " ";
-
-        // Date reported
-        string dateRptd = vect[1].substr(0, 10); // just get date info
-        //cout << dateRptd << " ";
-
-        // Date Occurred
-        string dateOCC = vect[2].substr(0, 10); // just get date info
-        //cout << dateOCC << " ";
-        // Time Occurred
-        string timeOCC = vect[3];
-        //cout << timeOCC << " ";
-        // Area Name
-        string areaName = vect[5];
-        //cout << areaName << " ";
-
-        string crimeType = vect[9];
-        //cout << crimeType << endl;
-        /*
-        if (cnt < 100) {
-            Data data(caseNum, dateOCC, timeOCC, areaName);
-            newSet.insert(caseNum, dateOCC, timeOCC, areaName);
-            newMap.insert(data.caseNum, data);
-            cnt++;
-        }
-        else {
-            break;
-        }
-        */
-    }
-    /*
-    cout << "Set:" << endl;
-    newSet.printTree();
-    cout << "Total entries: " << newSet.size << endl;
-    cout << endl << "Map:" << endl;
-    for (HashMap<Data>::ItemPair pair : newMap.getIterable()) {
-        Data data = pair.value;
-        cout << data.caseNum << " " << data.dateOCC << " " << data.timeOCC << " " << data.areaName << endl;
-    }
-    cout << "Total entries: " << newMap.getSize() << endl;
-    */
+    ParsedCSV CSVFile;
+    CSVFile.parseFile("Trimmed_Crime_Data_from_2020_to_Present.csv");
 
     // create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
