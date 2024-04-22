@@ -28,7 +28,7 @@ int main() {
     // Now pass these to the Buttons constructor
     Buttons buttons(myFont, dropBgColor);
     Sprites sprites; // instantiate the structs
-    Text text;
+    //Text text;
 
     HashMap<Data> newMap;
     Set set;
@@ -110,7 +110,8 @@ int main() {
 
 
     //================================= START MAIN LOOP =======================================
-
+    sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
+    Text text(windowSize);  // Pass window size
     while (welcomeWindow.isOpen()) {
 
         if (clock.getElapsedTime().asMilliseconds() >= 25 && !isSubHeaderComplete) { // CLOCK FOR TEXT ANIMATION
@@ -143,6 +144,9 @@ int main() {
                         sf::Vector2u size = launch.getSize();
                         sf::Vector2f center(size.x / 2.f, size.y / 2.f);
 
+                        buttons.track.setSize(sf::Vector2f(size.x * 0.8f, 10.f));  // Making track width 80% of window width
+                        buttons.track.setPosition(size.x * 0.1f, size.y - 100);  // Centering track horizontally and 50px from the bottom
+                        buttons.track.setFillColor(sf::Color::White); // Ensuring the track is visible, set a contrasting color
                        
                         sprites.a1sprite.setOrigin(sprites.a1sprite.getLocalBounds().width / 2, sprites.a1sprite.getLocalBounds().height / 2);
                         sprites.a1sprite.setPosition(center);
@@ -182,7 +186,6 @@ int main() {
 
                         sprites.m14sprite.setOrigin(sprites.m14sprite.getLocalBounds().width / 2, sprites.m14sprite.getLocalBounds().height / 2);
                         sprites.m14sprite.setPosition(center);
-
 
 
                         while (launch.isOpen()) { // launch window main loop 
