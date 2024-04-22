@@ -25,8 +25,7 @@ int main() {
     }
     sf::Color dropBgColor = sf::Color::White; // or any color you prefer
 
-    // Now pass these to the Buttons constructor
-    Buttons buttons(myFont, dropBgColor);
+    
     Sprites sprites; // instantiate the structs
     //Text text;
 
@@ -88,6 +87,9 @@ int main() {
     // create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
     ::ShowWindow(welcomeWindow.getSystemHandle(), SW_MAXIMIZE);
+   
+    sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
+    Buttons buttons(myFont, dropBgColor, windowSize);  // pass window size
 
     // start the initial window loop
     // this will be the "home base" window.
@@ -97,7 +99,7 @@ int main() {
 
     
     sf::Clock clock; // starts the clock
-    string fullText = "Welcome to the Los Angeles Crime Visualizer.\n\nIn this application, you will have the ability to compare and contrast the safety of\ndifferent areas in LA based off their reported crime rates and aggregated data over the past 4 years.\n";
+    string fullText = "Welcome. In this application, you will be able\nto compare and contrast different crime statistics\nin LA over the years 2020 - 2024.\nClick below to launch the visualizer."; 
     string displayedText;
     size_t textIndex = 0;
     bool isSubHeaderComplete = false;
@@ -110,7 +112,7 @@ int main() {
 
 
     //================================= START MAIN LOOP =======================================
-    sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
+    //sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
     Text text(windowSize);  // Pass window size
     while (welcomeWindow.isOpen()) {
 
@@ -126,20 +128,19 @@ int main() {
         }
 
         sf::Event event;
-
         while (welcomeWindow.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 welcomeWindow.close();
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    // get the position of the click
                     sf::Vector2i mousePos = sf::Mouse::getPosition(welcomeWindow);
-
-                    if (buttons.beginButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    if (text.begin.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        std::cout << "Begin text clicked, attempting to open launch window..." << std::endl;
                         welcomeWindow.close();
-
-                        sf::RenderWindow launch(sf::VideoMode::getDesktopMode(), "Comparator"); // create launch window here 
+                        sf::RenderWindow launch(sf::VideoMode::getDesktopMode(), "Comparator");
+                        
+                        // create launch window here 
                         // get window size to make positions proportional to the window
                         sf::Vector2u size = launch.getSize();
                         sf::Vector2f center(size.x / 2.f, size.y / 2.f);
