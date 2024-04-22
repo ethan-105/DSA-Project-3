@@ -37,15 +37,34 @@ int main() {
     ParsedCSV CSVFile;
     CSVFile.parseFile("Trimmed_Crime_Data_from_2020_to_Present.csv");
     
+    int total = CSVFile.csvData.size();
+    int count = 0;
+    cout << "Set loading:" << endl;
+    cout << "[----------] " << count << "/" << total;
     for (unordered_map<string, string> datapoint : CSVFile.csvData)
     {
+        count++;
+        cout << "\r";
+        cout << "[";
+        for (int i = 0; i < 10; i++)
+        {
+            if ((float)count / total >= (float)(i + 1) / 10)
+            {
+                cout << "=";
+            }
+            else
+            {
+                cout << "-";
+            }
+        }
+        cout << "]" << count << "/" << total;
+
         string caseNum = datapoint["DR_NO"];
         string dateOCC = datapoint["DATE OCC"];
         string crimeCode = datapoint["Crm Cd Desc"];
         string areaName = datapoint["AREA NAME"];
         set.insert(caseNum, dateOCC, crimeCode, areaName);
     }
-    cout << set.size << endl;
 
     // create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
@@ -162,10 +181,8 @@ int main() {
                             sf::FloatRect spriteBounds = sprites.mapSprite.getGlobalBounds();
                             sprites.mapSprite.setPosition((windowSize.x - spriteBounds.width), 45);
 
-                            launch.draw(buttons.dropbg);
-                            //launch.draw(buttons.dropdownButton);
-                            launch.draw(text.dropdownButtonText);
-                            launch.draw(buttons.triangle);
+                            launch.draw(buttons.dropbg); // Assuming this should also appear in the launch window
+                            launch.draw(text.dropdownButtonText); // Ensure this text is drawn in the launch window
 
                             if (isDropdownVisible) {
                                 launch.draw(text.option1);
@@ -173,6 +190,7 @@ int main() {
                                 launch.draw(text.option3);
                             }
 
+                            launch.draw(buttons.triangle); 
                             launch.draw(buttons.track);
                             launch.draw(buttons.handle1);
                             launch.draw(buttons.handle2);
@@ -180,8 +198,24 @@ int main() {
                             launch.draw(text.y2);
                             launch.draw(text.y3);
                             launch.draw(text.y4);
-                            launch.draw(sprites.mapSprite);
+                            //launch.draw(sprites.mapSprite);
+                            launch.draw(sprites.a1sprite); 
+                            launch.draw(sprites.b2sprite);
+                            launch.draw(sprites.m2sprite); 
+                            launch.draw(sprites.m3sprite); 
+                            launch.draw(sprites.m4sprite); 
+                            launch.draw(sprites.m5sprite); 
+                            launch.draw(sprites.m6sprite); 
+                            launch.draw(sprites.m7sprite); 
+                            launch.draw(sprites.m9sprite); 
+                            launch.draw(sprites.m10sprite);
+                            launch.draw(sprites.m11sprite); 
+                            launch.draw(sprites.m12sprite); 
+                            launch.draw(sprites.m14sprite); 
+                  
+
                             launch.display();
+                            
                         }
                     }
                 }
