@@ -30,7 +30,7 @@ int main() {
     Sprites sprites; // instantiate the structs
     Text text;
 
-    HashMap<Data> newMap;
+    HashMap<HashMap<list<Data>*>*> theMap; // map of (region: (year: (caseNum: data)))
     Set set;
     // testing set and map
     ParsedCSV CSVFile;
@@ -76,9 +76,72 @@ int main() {
     cout << endl;
 
     chrono::time_point<chrono::steady_clock> testFinal = chrono::high_resolution_clock::now();
-    const chrono::duration<double> elapsedTime{ testFinal - test };
-    cout << "Time taken for Set: " << elapsedTime.count() << endl;
+    chrono::duration<double> elapsedTime{ testFinal - test };
+    cout << "Time taken for Set Init: " << elapsedTime.count() << endl;
 
+
+
+    test = chrono::high_resolution_clock::now();
+    count = 0;
+    percent = 0;
+    cout << "Unordered Map loading:" << endl;
+    cout << "[----------] " << count << "/" << total;
+    for (unordered_map<string, string> datapoint : CSVFile.csvData)
+    {
+        count++;
+        if (((float)count / total >= (float)(percent) / 10))
+        {
+            if (((float)count / total >= (float)(percent + 1) / 10))
+            {
+                percent++;
+                cout << "\r";
+                cout << "[";
+                for (int i = 0; i < 10; i++)
+                {
+                    if ((float)count / total >= (float)(i + 1) / 10)
+                    {
+                        cout << "=";
+                    }
+                    else
+                    {
+                        cout << "-";
+                    }
+                }
+                cout << "]" << count << "/" << total;
+            }
+        }
+
+        string caseNum = datapoint["DR_NO"];
+        string dateOCC = datapoint["DATE OCC"];
+        string YEAR = dateOCC.substr(6, 4);
+        string crimeCode = datapoint["Crm Cd Desc"];
+        string areaName = datapoint["AREA NAME"];
+        Data data(caseNum, dateOCC, crimeCode, areaName);
+        bool hasYear = theMap.has(YEAR); 
+        if (!hasYear) {
+            HashMap<list<Data>*>* toEmplace= new HashMap<list<Data>*>{};
+            list<Data>* toEmplaceSub = new list<Data>{};
+            toEmplaceSub->push_back(data);
+            toEmplace->emplace(areaName, toEmplaceSub);
+            theMap.emplace(YEAR, toEmplace);
+        }
+        else {
+            bool hasArea = theMap.at(YEAR)->has(areaName);
+            if (!hasArea) {
+                list<Data>* toEmplaceSub = new list<Data>{};
+                toEmplaceSub->push_back(data);
+                theMap.at(YEAR)->emplace(areaName, toEmplaceSub);
+            }
+            else {
+                theMap.at(YEAR)->at(areaName)->push_back(data);
+            }
+        }
+    }
+    cout << endl;
+
+    testFinal = chrono::high_resolution_clock::now();
+    elapsedTime = testFinal - test ;
+    cout << "Time taken for Unordered Map Init: " << elapsedTime.count() << endl;
 
 
     // create initial welcome window ! 
