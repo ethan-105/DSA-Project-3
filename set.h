@@ -39,9 +39,8 @@ public:
 
 	}
 
-	void insert(string caseNum, string dateOCC, string crimeCode, string areaName)
+	void insert(Data data)
 	{
-		Data data = Data(caseNum, dateOCC, crimeCode, areaName);
 		this->size++;
 		if (head != nullptr)
 		{
@@ -284,7 +283,7 @@ Set setUnion(Set set1, Set set2)
 		}
 		if (!newSet.Set::inSet(newSet.head, temp->data))
 		{
-			newSet.insert(temp->data.caseNum, temp->data.dateOCC, temp->data.crimeCode, temp->data.areaName);
+			newSet.insert(temp->data);
 		}
 		queue.pop();
 		if (queue.empty())
@@ -292,6 +291,38 @@ Set setUnion(Set set1, Set set2)
 			break;
 		}
 		temp = queue.front();
+	}
+	return newSet;
+}
+
+Set setIntersect(Set set1, Set set2)
+{
+	Set newSet;
+	Set::CrimeReport* temp = set1.head;
+	Set::CrimeReport* temp2 = set2.head;
+	bool done = false;
+	while (temp->lchild != nullptr)
+	{
+		temp = temp->lchild;
+	}
+	while (temp->rchild != nullptr)
+	{
+		temp = temp->rchild;
+	}
+	while (!done)
+	{
+		if (temp > temp2)
+		{
+			temp2 = temp2->parent;
+		}
+		else if (temp < temp2)
+		{
+			temp = temp->parent;
+		}
+		else // Equal
+		{
+			newSet.insert(temp->data);
+		}
 	}
 	return newSet;
 }

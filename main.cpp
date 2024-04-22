@@ -25,10 +25,9 @@ int main() {
     }
     sf::Color dropBgColor = sf::Color::White; // or any color you prefer
 
-    // Now pass these to the Buttons constructor
-    Buttons buttons(myFont, dropBgColor);
+    
     Sprites sprites; // instantiate the structs
-    Text text;
+    //Text text;
 
     HashMap<HashMap<list<Data>*>*> theMap; // map of (region: (year: (caseNum: data)))
     Set set;
@@ -71,7 +70,8 @@ int main() {
         string dateOCC = datapoint["DATE OCC"];
         string crimeCode = datapoint["Crm Cd Desc"];
         string areaName = datapoint["AREA NAME"];
-        set.insert(caseNum, dateOCC, crimeCode, areaName);
+        Data data = Data(caseNum, dateOCC, crimeCode, areaName);
+        set.insert(data);
     }
     cout << endl;
 
@@ -144,9 +144,15 @@ int main() {
     cout << "Time taken for Unordered Map Init: " << elapsedTime.count() << endl;
 
 
+    int leftDate;
+    int rightDate;
+
     // create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
     ::ShowWindow(welcomeWindow.getSystemHandle(), SW_MAXIMIZE);
+   
+    sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
+    Buttons buttons(myFont, dropBgColor, windowSize);  // pass window size
 
     // start the initial window loop
     // this will be the "home base" window.
@@ -156,7 +162,7 @@ int main() {
 
     
     sf::Clock clock; // starts the clock
-    string fullText = "Welcome to the Los Angeles Crime Visualizer.\n\nIn this application, you will have the ability to compare and contrast the safety of\ndifferent areas in LA based off their reported crime rates and aggregated data over the past 4 years.\n";
+    string fullText = "Welcome. In this application, you will be able\nto compare and contrast different crime statistics\nin LA over the years 2020 - 2024.\nClick below to launch the visualizer."; 
     string displayedText;
     size_t textIndex = 0;
     bool isSubHeaderComplete = false;
@@ -169,7 +175,8 @@ int main() {
 
 
     //================================= START MAIN LOOP =======================================
-
+    //sf::Vector2u windowSize = welcomeWindow.getSize();  // Get the size of the window
+    Text text(windowSize);  // Pass window size
     while (welcomeWindow.isOpen()) {
 
         if (clock.getElapsedTime().asMilliseconds() >= 25 && !isSubHeaderComplete) { // CLOCK FOR TEXT ANIMATION
@@ -184,24 +191,34 @@ int main() {
         }
 
         sf::Event event;
-
         while (welcomeWindow.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 welcomeWindow.close();
+            else if (event.type == sf::Event::Resized) {
+                // Update the window view to the new size of the window
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                welcomeWindow.setView(sf::View(visibleArea));
+
+                // Recalculate the positions and sizes of buttons
+                buttons.updatePositions(sf::Vector2u(event.size.width, event.size.height)); // Changed line
+            }
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    // get the position of the click
                     sf::Vector2i mousePos = sf::Mouse::getPosition(welcomeWindow);
-
-                    if (buttons.beginButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    if (text.begin.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        std::cout << "Begin text clicked, attempting to open launch window..." << std::endl;
                         welcomeWindow.close();
-
-                        sf::RenderWindow launch(sf::VideoMode::getDesktopMode(), "Comparator"); // create launch window here 
+                        sf::RenderWindow launch(sf::VideoMode::getDesktopMode(), "Comparator");
+                        
+                        // create launch window here 
                         // get window size to make positions proportional to the window
                         sf::Vector2u size = launch.getSize();
                         sf::Vector2f center(size.x / 2.f, size.y / 2.f);
 
+                        buttons.track.setSize(sf::Vector2f(size.x * 0.8f, 10.f));  // Making track width 80% of window width
+                        buttons.track.setPosition(size.x * 0.1f, size.y - 100);  // Centering track horizontally and 50px from the bottom
+                        buttons.track.setFillColor(sf::Color::White); // Ensuring the track is visible, set a contrasting color
                        
                         sprites.a1sprite.setOrigin(sprites.a1sprite.getLocalBounds().width / 2, sprites.a1sprite.getLocalBounds().height / 2);
                         sprites.a1sprite.setPosition(center);
@@ -243,7 +260,6 @@ int main() {
                         sprites.m14sprite.setPosition(center);
 
 
-
                         while (launch.isOpen()) { // launch window main loop 
 
 
@@ -265,6 +281,13 @@ int main() {
                                     if (buttons.handle2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                         isDraggingHandle2 = true;
                                     }
+                                    if (text.option1.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        text.option1.setFillColor(sf::Color::Black);
+                                    }
+                                    if (text.option2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        text.option3.setFillColor(sf::Color::Black);
+                                    }
+
 
                                     if (launchEvent.mouseButton.button == sf::Mouse::Left) {
                                         //::Vector2i mousePos = sf::Mouse::getPosition(launch);
@@ -347,12 +370,12 @@ int main() {
 
         // clear screen
         welcomeWindow.clear(pink);
-
+        //buttons.draw(welcomeWindow);
         // draw the window contents here
         welcomeWindow.draw(text.header);
         welcomeWindow.draw(text.subHeader);
         if (isSubHeaderComplete) { // Check if the subHeader text animation is complete
-            welcomeWindow.draw(buttons.beginButton);
+            //welcomeWindow.draw(buttons.beginButton);
             welcomeWindow.draw(text.begin);
         }
 
