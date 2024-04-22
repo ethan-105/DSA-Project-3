@@ -294,3 +294,40 @@ Set setUnion(Set set1, Set set2)
 	}
 	return newSet;
 }
+
+Set::CrimeReport* inorderHelper(Set::CrimeReport* head)
+{
+
+}
+
+Set setIntersect(Set set1, Set set2)
+{
+	Set newSet;
+	Set::CrimeReport* temp = set1.head;
+	Set::CrimeReport* temp2 = set2.head;
+	bool done = false;
+	while (temp->lchild != nullptr)
+	{
+		temp = temp->lchild;
+	}
+	while (temp->rchild != nullptr)
+	{
+		temp = temp->rchild;
+	}
+	while (!done)
+	{
+		if (temp > temp2)
+		{
+			temp2 = temp2->parent;
+		}
+		else if (temp < temp2)
+		{
+			temp = temp->parent;
+		}
+		else // Equal
+		{
+			newSet.insert(temp->data);
+		}
+	}
+	return newSet;
+}
