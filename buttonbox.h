@@ -14,7 +14,7 @@ struct Buttons {
     // Constructor
     Buttons(const sf::Font& font, const sf::Color& dropBgColor) :
         beginButton(sf::Vector2f(135.f, 60.f)),
-        track(sf::Vector2f(1300.f, 10.f)),
+        track(sf::Vector2f(300.f, 10.f)), // defualt size, will adjust later
         handle1(10.f), // radius
         handle2(10.f), // radius
         dropdownButton(sf::Vector2f(500.f, 200.f)),

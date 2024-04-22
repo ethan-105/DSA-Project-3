@@ -131,6 +131,9 @@ int main() {
                         sf::Vector2u size = launch.getSize();
                         sf::Vector2f center(size.x / 2.f, size.y / 2.f);
 
+                        buttons.track.setSize(sf::Vector2f(size.x * 0.8f, 10.f));  // Making track width 80% of window width
+                        buttons.track.setPosition(size.x * 0.1f, size.y - 100);  // Centering track horizontally and 50px from the bottom
+                        buttons.track.setFillColor(sf::Color::White); // Ensuring the track is visible, set a contrasting color
                        
                         sprites.a1sprite.setOrigin(sprites.a1sprite.getLocalBounds().width / 2, sprites.a1sprite.getLocalBounds().height / 2);
                         sprites.a1sprite.setPosition(center);
@@ -170,7 +173,6 @@ int main() {
 
                         sprites.m14sprite.setOrigin(sprites.m14sprite.getLocalBounds().width / 2, sprites.m14sprite.getLocalBounds().height / 2);
                         sprites.m14sprite.setPosition(center);
-
 
 
                         while (launch.isOpen()) { // launch window main loop 
