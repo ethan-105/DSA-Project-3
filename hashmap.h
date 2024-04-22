@@ -49,9 +49,6 @@ public:
 		// Array of lists of data
 		storage = new list<ItemPair>[capacity];
 	}
-	~HashMap() {
-		delete storage;
-	}
 	void rehash() {
 		unsigned int oldCapacity = capacity;
 		capacity *= 2;
