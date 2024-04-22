@@ -2,19 +2,19 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
+#include <list>
 #include <unordered_map> // Necessary for below, not used in main code
 
 using namespace std;
 
 struct ParsedCSV {
-    vector<unordered_map<string, string>> csvData;
-    vector<string> headers;
+    list<unordered_map<string, string>> csvData;
+    list<string> headers;
     ParsedCSV() {}
-    vector<string> readCSVLine(string line) {
+    list<string> readCSVLine(string line) {
         size_t index = 0;
         unsigned int headerPos = 0;
-        vector<string> output;
+        list<string> output;
         while (true) {
             size_t endIndex = index;
             string nextToAdd = "";
@@ -63,13 +63,17 @@ struct ParsedCSV {
                 }
                 cout << "]";
             }
-            vector<string> vect = readCSVLine(line);
-            if (vect.size() != headers.size()) {
+            list<string> someList = readCSVLine(line);
+            if (someList.size() != headers.size()) {
                 throw new invalid_argument("Row " + to_string(csvData.size()+2) + " did not match header column count");
             }
             unordered_map<string, string> toPush;
-            for (int i = 0; i < vect.size(); i++) {
-                toPush.emplace(headers[i], vect[i]);
+            list<string>::iterator headerIt = headers.begin();
+            list<string>::iterator listIt = someList.begin();
+            for (int i = 0; i < someList.size(); i++) {
+                toPush.emplace(headerIt->data(), listIt->data());
+                headerIt++;
+                listIt++;
             }
             csvData.push_back(toPush);
         }
