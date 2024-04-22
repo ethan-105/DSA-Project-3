@@ -14,8 +14,8 @@ struct Text {
         }
 
         // Setup texts with window size
-        setupText(header, "Los Angeles Crime Visualizer", 100, sf::Color::White, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.05f));
-        setupText(subHeader, "Welcome. In this application, you will be able to compare and contrast different\ncrime statistics in LA over the years 2020-2024.\nClick below to launch the visualizer.", 60, sf::Color::White, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.15f));
+        setupText(header, "Los Angeles Crime Visualizer", 100, sf::Color::White, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.3f));
+        setupText(subHeader, "Welcome. In this application, you will be able\nto compare and contrast different crime statistics\nin LA over the years 2020-2024.\nClick below to launch the visualizer.", 60, sf::Color::White, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.15f));
         setupText(begin, "Begin", 46, sf::Color::Black, sf::Vector2f(windowSize.x * 0.05f, windowSize.y * 0.85f));
         setupText(y1, "2020", 38, sf::Color::White, sf::Vector2f(windowSize.x * 0.30f, windowSize.y * 0.95f));
         setupText(y2, "2021", 38, sf::Color::White, sf::Vector2f(windowSize.x * 0.40f, windowSize.y * 0.95f));
