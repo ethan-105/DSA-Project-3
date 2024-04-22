@@ -218,6 +218,13 @@ int main() {
                                     if (buttons.handle2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                         isDraggingHandle2 = true;
                                     }
+                                    if (text.option1.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        text.option1.setFillColor(sf::Color::Black);
+                                    }
+                                    if (text.option2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        text.option3.setFillColor(sf::Color::Black);
+                                    }
+
 
                                     if (launchEvent.mouseButton.button == sf::Mouse::Left) {
                                         //::Vector2i mousePos = sf::Mouse::getPosition(launch);

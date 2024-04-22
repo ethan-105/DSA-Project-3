@@ -21,7 +21,7 @@ struct Buttons {
         beginButton.setPosition(windowSize.x * 0.05f, windowSize.y * 0.85f);
         beginButton.setFillColor(sf::Color::White);
 
-        track.setSize(sf::Vector2f(windowSize.x * 0.8f, 10.f));
+        track.setSize(sf::Vector2f(windowSize.x * 0.6f, 10.f));
         track.setPosition(windowSize.x * 0.1f, windowSize.y - 50);
         track.setFillColor(sf::Color::White);
 
