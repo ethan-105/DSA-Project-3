@@ -30,8 +30,17 @@ int main() {
     //Text text;
 
     HashMap<HashMap<list<Data>*>*> theMap; // map of (region: (year: (caseNum: data)))
-    Set set;
-    Set set2;
+    map<int, Set> yearSets;
+    Set set2020;
+    yearSets.insert(pair<int, Set>(2020, set2020));
+    Set set2021;
+    yearSets.insert(pair<int, Set>(2021, set2021));
+    Set set2022;
+    yearSets.insert(pair<int, Set>(2022, set2022));
+    Set set2023;
+    yearSets.insert(pair<int, Set>(2023, set2023));
+    vector<Set> regionSet(1);
+    vector<string> regionsKnown;
     // testing set and map
     ParsedCSV CSVFile;
     CSVFile.parseFile("Trimmed_Crime_Data_from_2020_to_Present.csv");
@@ -72,20 +81,58 @@ int main() {
         string crimeCode = datapoint["Crm Cd Desc"];
         string areaName = datapoint["AREA NAME"];
         Data data = Data(caseNum, dateOCC, crimeCode, areaName);
-        if (count % 2 == 0)
+
+        // Add to set map by year
+        if (dateOCC.substr(6, 4) == "2020")
         {
-            set.insert(data);
+            yearSets.at(2020).insert(data);
         }
-        set2.insert(data);
+        else if (dateOCC.substr(6, 4) == "2021")
+        {
+            yearSets.at(2021).insert(data);
+        }
+        else if (dateOCC.substr(6, 4) == "2022")
+        {
+            yearSets.at(2022).insert(data);
+        }
+        else if (dateOCC.substr(6, 4) == "2023")
+        {
+            yearSets.at(2023).insert(data);
+        }
+
+        // Add to a regions map
+        if (regionsKnown.size() == 0)
+        {
+            regionSet[0].insert(data);
+            regionsKnown.push_back(areaName);
+        }
+        for (int i = 0; i < regionsKnown.size(); i++)
+        {
+            if (areaName == regionsKnown[i])
+            {
+                regionSet[i].insert(data);
+                break;
+            }
+            else if (i == regionsKnown.size() - 1)
+            {
+                regionSet.resize(regionSet.size() + 1);
+                regionSet[i + 1].insert(data);
+                regionsKnown.push_back(areaName);
+                break;
+            }
+        }
     }
     cout << endl;
+    int maxRegionCrime = 0;
+    for (int i = 0; i < regionSet.size(); i++)
+    {
+        if (regionSet[i].size > maxRegionCrime) maxRegionCrime = regionSet[i].size;
+    }
 
     chrono::time_point<chrono::steady_clock> testFinal = chrono::high_resolution_clock::now();
     chrono::duration<double> elapsedTime{ testFinal - test };
     cout << "Time taken for Set Init: " << elapsedTime.count() << endl;
-
-    /*cout << set.size << " " << set2.size << endl;
-    Set newSet = setIntersect(set, set2);
+    /*Set newSet = setIntersect(set, set2);
     cout << newSet.size << endl;*/
 
     test = chrono::high_resolution_clock::now();
@@ -155,6 +202,7 @@ int main() {
     int minDate = min(leftDate, rightDate);
     int maxDate = max(leftDate, rightDate);
     bool dateRangeUpdated = false;
+    vector<Set> tempSets = regionSet;
 
     // create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
@@ -231,42 +279,55 @@ int main() {
                        
                         sprites.a1sprite.setOrigin(sprites.a1sprite.getLocalBounds().width / 2, sprites.a1sprite.getLocalBounds().height / 2);
                         sprites.a1sprite.setPosition(center);
+                        sprites.a1sprite.setColor(sf::Color(255 * ((float)tempSets[11].size / maxRegionCrime), 0, 0));
 
                         sprites.b2sprite.setOrigin(sprites.b2sprite.getLocalBounds().width / 2, sprites.b2sprite.getLocalBounds().height / 2);
                         sprites.b2sprite.setPosition(center);
+                        sprites.b2sprite.setColor(sf::Color(255 * ((float)tempSets[12].size / maxRegionCrime), 0, 0));
 
                         sprites.m2sprite.setOrigin(sprites.m2sprite.getLocalBounds().width / 2, sprites.m2sprite.getLocalBounds().height / 2);
                         sprites.m2sprite.setPosition(center);
+                        sprites.m2sprite.setColor(sf::Color(255 * ((float)tempSets[0].size / maxRegionCrime), 0, 0));
 
                         sprites.m3sprite.setOrigin(sprites.m3sprite.getLocalBounds().width / 2, sprites.m3sprite.getLocalBounds().height / 2);
                         sprites.m3sprite.setPosition(center);
+                        sprites.m3sprite.setColor(sf::Color(255 * ((float)tempSets[1].size / maxRegionCrime), 0, 0));
 
                         sprites.m4sprite.setOrigin(sprites.m4sprite.getLocalBounds().width / 2, sprites.m4sprite.getLocalBounds().height / 2);
                         sprites.m4sprite.setPosition(center);
+                        sprites.m4sprite.setColor(sf::Color(255 * ((float)tempSets[2].size / maxRegionCrime), 0, 0));
 
                         sprites.m5sprite.setOrigin(sprites.m5sprite.getLocalBounds().width / 2, sprites.m5sprite.getLocalBounds().height / 2);
                         sprites.m5sprite.setPosition(center);
+                        sprites.m5sprite.setColor(sf::Color(255 * ((float)tempSets[3].size / maxRegionCrime), 0, 0));
 
                         sprites.m6sprite.setOrigin(sprites.m6sprite.getLocalBounds().width / 2, sprites.m6sprite.getLocalBounds().height / 2);
                         sprites.m6sprite.setPosition(center);
+                        sprites.m6sprite.setColor(sf::Color(255 * ((float)tempSets[4].size / maxRegionCrime), 0, 0));
 
                         sprites.m7sprite.setOrigin(sprites.m7sprite.getLocalBounds().width / 2, sprites.m7sprite.getLocalBounds().height / 2);
                         sprites.m7sprite.setPosition(center);
+                        sprites.m7sprite.setColor(sf::Color(255 * ((float)tempSets[5].size / maxRegionCrime), 0, 0));
 
                         sprites.m9sprite.setOrigin(sprites.m9sprite.getLocalBounds().width / 2, sprites.m9sprite.getLocalBounds().height / 2);
                         sprites.m9sprite.setPosition(center);
+                        sprites.m9sprite.setColor(sf::Color(255 * ((float)tempSets[6].size / maxRegionCrime), 0, 0));
 
                         sprites.m10sprite.setOrigin(sprites.m10sprite.getLocalBounds().width / 2, sprites.m10sprite.getLocalBounds().height / 2);
                         sprites.m10sprite.setPosition(center);
+                        sprites.m10sprite.setColor(sf::Color(255 * ((float)tempSets[7].size / maxRegionCrime), 0, 0));
 
                         sprites.m11sprite.setOrigin(sprites.m11sprite.getLocalBounds().width / 2, sprites.m11sprite.getLocalBounds().height / 2);
                         sprites.m11sprite.setPosition(center);
+                        sprites.m11sprite.setColor(sf::Color(255 * ((float)tempSets[8].size / maxRegionCrime), 0, 0));
 
                         sprites.m12sprite.setOrigin(sprites.m12sprite.getLocalBounds().width / 2, sprites.m12sprite.getLocalBounds().height / 2);
                         sprites.m12sprite.setPosition(center);
+                        sprites.m12sprite.setColor(sf::Color(255 * ((float)tempSets[9].size / maxRegionCrime), 0, 0));
 
                         sprites.m14sprite.setOrigin(sprites.m14sprite.getLocalBounds().width / 2, sprites.m14sprite.getLocalBounds().height / 2);
                         sprites.m14sprite.setPosition(center);
+                        sprites.m14sprite.setColor(sf::Color(255 * ((float)tempSets[10].size / maxRegionCrime), 0, 0));
 
 
                         while (launch.isOpen()) { // launch window main loop 
@@ -391,10 +452,60 @@ int main() {
                                         int tempMax = maxDate;
                                         minDate = min(leftDate, rightDate);
                                         maxDate = max(leftDate, rightDate);
-                                        if (tempMin != minDate || tempMax != maxDate)
+                                        dateRangeUpdated == true;
+                                        
+                                        if (dateRangeUpdated)
                                         {
-                                            dateRangeUpdated == true;
+                                            cout << "In this block" << endl;
+                                            vector<int> dateRange;
+                                            maxRegionCrime = 0;
+                                            tempSets.clear();
+                                            for (int i = 2020; i < 2024; i++)
+                                            {
+                                                if (i >= minDate && i <= maxDate)
+                                                {
+                                                    dateRange.push_back(i);
+                                                }
+                                            }
+                                            for (int i = 0; i < regionSet.size(); i++)
+                                            {
+                                                Set tempSet;
+                                                for (int j = 0; j < dateRange.size(); j++)
+                                                {
+                                                    setUnion(tempSet, setIntersect(yearSets.at(dateRange[j]), regionSet[i]));
+                                                }
+                                                tempSets.push_back(tempSet);
+                                                if (tempSets[i].size > maxRegionCrime) maxRegionCrime = tempSets[i].size;
+                                            }
+                                            sprites.a1sprite.setColor(sf::Color(255 * ((float)tempSets[11].size / maxRegionCrime), 0, 0));
+                                            sprites.b2sprite.setColor(sf::Color(255 * ((float)tempSets[12].size / maxRegionCrime), 0, 0));
+                                            sprites.m2sprite.setColor(sf::Color(255 * ((float)tempSets[0].size / maxRegionCrime), 0, 0));
+                                            sprites.m3sprite.setColor(sf::Color(255 * ((float)tempSets[1].size / maxRegionCrime), 0, 0));
+                                            sprites.m4sprite.setColor(sf::Color(255 * ((float)tempSets[2].size / maxRegionCrime), 0, 0));
+                                            sprites.m5sprite.setColor(sf::Color(255 * ((float)tempSets[3].size / maxRegionCrime), 0, 0));
+                                            sprites.m6sprite.setColor(sf::Color(255 * ((float)tempSets[4].size / maxRegionCrime), 0, 0));
+                                            sprites.m7sprite.setColor(sf::Color(255 * ((float)tempSets[5].size / maxRegionCrime), 0, 0));
+                                            sprites.m9sprite.setColor(sf::Color(255 * ((float)tempSets[6].size / maxRegionCrime), 0, 0));
+                                            sprites.m10sprite.setColor(sf::Color(255 * ((float)tempSets[7].size / maxRegionCrime), 0, 0));
+                                            sprites.m11sprite.setColor(sf::Color(255 * ((float)tempSets[8].size / maxRegionCrime), 0, 0));
+                                            sprites.m12sprite.setColor(sf::Color(255 * ((float)tempSets[9].size / maxRegionCrime), 0, 0));
+                                            sprites.m14sprite.setColor(sf::Color(255 * ((float)tempSets[10].size / maxRegionCrime), 0, 0));
+                                            launch.draw(sprites.a1sprite);
+                                            launch.draw(sprites.b2sprite);
+                                            launch.draw(sprites.m2sprite);
+                                            launch.draw(sprites.m3sprite);
+                                            launch.draw(sprites.m4sprite);
+                                            launch.draw(sprites.m5sprite);
+                                            launch.draw(sprites.m6sprite);
+                                            launch.draw(sprites.m7sprite);
+                                            launch.draw(sprites.m9sprite);
+                                            launch.draw(sprites.m10sprite);
+                                            launch.draw(sprites.m11sprite);
+                                            launch.draw(sprites.m12sprite);
+                                            launch.draw(sprites.m14sprite);
+                                            launch.display();
                                         }
+
                                     }
                                 }
                             }
