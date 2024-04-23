@@ -360,9 +360,33 @@ Set setIntersect(Set set1, Set set2)
 	list<Set::CrimeReport*>::iterator it = list1.begin();
 	list<Set::CrimeReport*>::iterator it2 = list2.begin();
 	int count = 0;
+	int percent = 0;
+	int total = max(list1.size(), list2.size());
+	cout << "[----------] " << count << "/" << max(list1.size(), list2.size());
 	for (int i = 0; i < max(list1.size(), list2.size()); i++)
 	{
 		count++;
+		if (((float)count / total >= (float)(percent) / 10))
+		{
+			if (((float)count / total >= (float)(percent + 1) / 10))
+			{
+				percent++;
+				cout << "\r";
+				cout << "[";
+				for (int i = 0; i < 10; i++)
+				{
+					if ((float)count / total >= (float)(i + 1) / 10)
+					{
+						cout << "=";
+					}
+					else
+					{
+						cout << "-";
+					}
+				}
+				cout << "]" << count << "/" << total;
+			}
+		}
 		if ((*it)->data.caseNum > (*it2)->data.caseNum && it2 != list2.end())
 		{
 			it2++;
@@ -384,6 +408,6 @@ Set setIntersect(Set set1, Set set2)
 			}
 		}
 	}
-	cout << count << endl;
+
 	return newSet;
 }

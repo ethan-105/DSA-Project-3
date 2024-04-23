@@ -79,15 +79,14 @@ int main() {
         set2.insert(data);
     }
     cout << endl;
-    //cout << set.size << " " << set2.size << endl;
-    //Set newSet = setIntersect(set, set2);
-    //cout << newSet.size << endl;
 
     chrono::time_point<chrono::steady_clock> testFinal = chrono::high_resolution_clock::now();
     chrono::duration<double> elapsedTime{ testFinal - test };
     cout << "Time taken for Set Init: " << elapsedTime.count() << endl;
 
-
+    /*cout << set.size << " " << set2.size << endl;
+    Set newSet = setIntersect(set, set2);
+    cout << newSet.size << endl;*/
 
     test = chrono::high_resolution_clock::now();
     count = 0;
@@ -321,9 +320,50 @@ int main() {
 
                                         if (isDraggingHandle1) {
                                             buttons.handle1.setPosition(newX, buttons.handle1.getPosition().y);
+                                            if (newX >= size.x * 0.1f && newX <= size.x * 0.22f)
+                                            {
+                                                buttons.handle1.setPosition(size.x * 0.1f, buttons.handle1.getPosition().y);
+                                            }
+                                            if (newX > size.x * 0.22f && newX <= size.x * 0.49f)
+                                            {
+                                                buttons.handle1.setPosition(size.x * 0.3666f, buttons.handle1.getPosition().y);
+                                            }
+                                            if (newX > size.x * 0.49f && newX <= size.x * 0.76f)
+                                            {
+                                                buttons.handle1.setPosition(size.x * 0.6333f, buttons.handle1.getPosition().y);
+                                            }
+                                            if (newX > size.x * 0.76f && newX <= size.x * 0.9f)
+                                            {
+                                                buttons.handle1.setPosition(size.x * 0.88f, buttons.handle1.getPosition().y);
+                                            }
                                         }
-                                        if (isDraggingHandle2) {
+                                        else if (isDraggingHandle2) { // else if should prevent stuck overlapping
                                             buttons.handle2.setPosition(newX, buttons.handle2.getPosition().y);
+                                            if (newX >= size.x * 0.1f && newX <= size.x * 0.22f)
+                                            {
+                                                buttons.handle2.setPosition(size.x * 0.1f, buttons.handle2.getPosition().y);
+                                            }
+                                            if (newX > size.x * 0.22f && newX <= size.x * 0.49f)
+                                            {
+                                                buttons.handle2.setPosition(size.x * 0.3666f, buttons.handle2.getPosition().y);
+                                            }
+                                            if (newX > size.x * 0.49f && newX <= size.x * 0.76f)
+                                            {
+                                                buttons.handle2.setPosition(size.x * 0.6333f, buttons.handle2.getPosition().y);
+                                            }
+                                            if (newX > size.x * 0.76f && newX <= size.x * 0.9f)
+                                            {
+                                                buttons.handle2.setPosition(size.x * 0.88f, buttons.handle2.getPosition().y);
+                                            }
+                                            if (buttons.handle2.getPosition().x == buttons.handle1.getPosition().x // Overlapping 
+                                                && buttons.handle2.getPosition().y == buttons.handle1.getPosition().y) // But prevent infinite movement
+                                            {
+                                                buttons.handle2.setPosition(buttons.handle2.getPosition().x, buttons.handle2.getPosition().y - 64);
+                                            }
+                                            else // Reset y to base level (1)
+                                            {
+                                                buttons.handle2.setPosition(buttons.handle2.getPosition().x, buttons.handle1.getPosition().y);
+                                            }
                                         }
                                     }
                                 }
