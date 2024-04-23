@@ -81,45 +81,12 @@ Set::CrimeReport* Set::insertHelper(CrimeReport* head, Data data)
 {
 	bool conflict = false;
 
-	//// Make sure head exists
-	//if (head == nullptr)
-	//{
-	//	return new CrimeReport(data);
-	//}
-	//else if (data.caseNum < head->data.caseNum) // if caseNum < head
-	//{
-	//	// insert left
-	//	head->lchild = Set::insertHelper(head->lchild, data);
-	//	head->lchild->parent = head;
-	//	// Check for color conflict if this is not the head
-	//	if (this->head != head)
-	//	{
-	//		if (head->lchild->color == 'R' && head->color == 'R')
-	//		{
-	//			conflict = true; // fix color after rotations
-	//		}
-	//	}
-	//}
-	//else if (data.caseNum > head->data.caseNum)// caseNum > head
-	//{
-	//	// insert right
-	//	head->rchild = insertHelper(head->rchild, data);
-	//	head->rchild->parent = head;
-	//	// Check for color conflict if this is not the head
-	//	if (this->head != head)
-	//	{
-	//		if (head->rchild->color == 'R' && head->color == 'R')
-	//		{
-	//			conflict = true; // fix color after rotations
-	//		}
-	//	}
-	//}
-	std::stack<CrimeReport*> nodeStack;
-	nodeStack.push(head);
+	std::stack<CrimeReport*> stack;
+	stack.push(head);
 
-	while (!nodeStack.empty()) {
-		CrimeReport* head = nodeStack.top();
-		nodeStack.pop();
+	while (!stack.empty()) {
+		CrimeReport* head = stack.top();
+		stack.pop();
 
 		if (data.caseNum < head->data.caseNum) {
 			if (head->lchild == nullptr) {
@@ -135,7 +102,7 @@ Set::CrimeReport* Set::insertHelper(CrimeReport* head, Data data)
 				break;  // Stop loop after insertion
 			}
 			else {
-				nodeStack.push(head->lchild);
+				stack.push(head->lchild);
 			}
 		}
 		else if (data.caseNum > head->data.caseNum) {
@@ -152,7 +119,7 @@ Set::CrimeReport* Set::insertHelper(CrimeReport* head, Data data)
 				break;  // Stop loop after insertion
 			}
 			else {
-				nodeStack.push(head->rchild);
+				stack.push(head->rchild);
 			}
 		}
 	}
