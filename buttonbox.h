@@ -26,11 +26,11 @@ struct Buttons {
         track.setFillColor(sf::Color::White);
 
         handle1.setRadius(30.f);
-        handle1.setPosition(track.getPosition().x, track.getPosition().y - handle1.getRadius());
+        handle1.setPosition(track.getPosition().x, track.getPosition().y - handle1.getRadius()/2);
         handle1.setFillColor(sf::Color::Black);
 
         handle2.setRadius(30.f);
-        handle2.setPosition(track.getPosition().x + track.getSize().x - handle2.getRadius() * 2, track.getPosition().y - handle2.getRadius());
+        handle2.setPosition(sf::Vector2f(windowSize.x * 0.87f, track.getPosition().y - handle2.getRadius()/2));
         handle2.setFillColor(sf::Color::Black);
 
         dropdownButton.setSize(sf::Vector2f(windowSize.x * 0.25f, 50.f));

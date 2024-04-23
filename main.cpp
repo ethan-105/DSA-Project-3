@@ -150,9 +150,11 @@ int main() {
     elapsedTime = testFinal - test ;
     cout << "Time taken for Unordered Map Init: " << elapsedTime.count() << endl;
 
-
-    int leftDate;
-    int rightDate;
+    int leftDate = 2020;
+    int rightDate = 2024;
+    int minDate = min(leftDate, rightDate);
+    int maxDate = max(leftDate, rightDate);
+    bool dateRangeUpdated = false;
 
     // create initial welcome window ! 
     sf::RenderWindow welcomeWindow(sf::VideoMode::getDesktopMode(), "Los Angeles Crime Visualizer");
@@ -292,6 +294,9 @@ int main() {
                                         text.option1.setFillColor(sf::Color::Black);
                                     }
                                     if (text.option2.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
+                                        text.option2.setFillColor(sf::Color::Black);
+                                    }
+                                    if (text.option3.getGlobalBounds().contains(launchEvent.mouseButton.x, launchEvent.mouseButton.y)) {
                                         text.option3.setFillColor(sf::Color::Black);
                                     }
 
@@ -323,18 +328,31 @@ int main() {
                                             if (newX >= size.x * 0.1f && newX <= size.x * 0.22f)
                                             {
                                                 buttons.handle1.setPosition(size.x * 0.1f, buttons.handle1.getPosition().y);
+                                                leftDate = 2020;
                                             }
                                             if (newX > size.x * 0.22f && newX <= size.x * 0.49f)
                                             {
                                                 buttons.handle1.setPosition(size.x * 0.3666f, buttons.handle1.getPosition().y);
+                                                leftDate = 2021;
                                             }
                                             if (newX > size.x * 0.49f && newX <= size.x * 0.76f)
                                             {
                                                 buttons.handle1.setPosition(size.x * 0.6333f, buttons.handle1.getPosition().y);
+                                                leftDate = 2022;
                                             }
                                             if (newX > size.x * 0.76f && newX <= size.x * 0.9f)
                                             {
-                                                buttons.handle1.setPosition(size.x * 0.88f, buttons.handle1.getPosition().y);
+                                                buttons.handle1.setPosition(size.x * 0.87f, buttons.handle1.getPosition().y);
+                                                leftDate = 2023;
+                                            }
+                                            if (buttons.handle2.getPosition().x == buttons.handle1.getPosition().x // Overlapping 
+                                                && (buttons.handle2.getPosition().y == buttons.handle1.getPosition().y || isDraggingHandle1)) // But prevent infinite movement
+                                            {
+                                                buttons.handle2.setPosition(buttons.handle2.getPosition().x, buttons.handle1.getPosition().y - 64);
+                                            }
+                                            else // Reset y to base level (1)
+                                            {
+                                                buttons.handle2.setPosition(buttons.handle2.getPosition().x, buttons.handle1.getPosition().y);
                                             }
                                         }
                                         else if (isDraggingHandle2) { // else if should prevent stuck overlapping
@@ -342,28 +360,40 @@ int main() {
                                             if (newX >= size.x * 0.1f && newX <= size.x * 0.22f)
                                             {
                                                 buttons.handle2.setPosition(size.x * 0.1f, buttons.handle2.getPosition().y);
+                                                rightDate = 2020;
                                             }
                                             if (newX > size.x * 0.22f && newX <= size.x * 0.49f)
                                             {
                                                 buttons.handle2.setPosition(size.x * 0.3666f, buttons.handle2.getPosition().y);
+                                                rightDate = 2021;
                                             }
                                             if (newX > size.x * 0.49f && newX <= size.x * 0.76f)
                                             {
                                                 buttons.handle2.setPosition(size.x * 0.6333f, buttons.handle2.getPosition().y);
+                                                rightDate = 2022;
                                             }
                                             if (newX > size.x * 0.76f && newX <= size.x * 0.9f)
                                             {
-                                                buttons.handle2.setPosition(size.x * 0.88f, buttons.handle2.getPosition().y);
+                                                buttons.handle2.setPosition(size.x * 0.87f, buttons.handle2.getPosition().y);
+                                                rightDate = 2023;
                                             }
                                             if (buttons.handle2.getPosition().x == buttons.handle1.getPosition().x // Overlapping 
-                                                && buttons.handle2.getPosition().y == buttons.handle1.getPosition().y) // But prevent infinite movement
+                                                && (buttons.handle2.getPosition().y == buttons.handle1.getPosition().y || isDraggingHandle2)) // But prevent infinite movement
                                             {
-                                                buttons.handle2.setPosition(buttons.handle2.getPosition().x, buttons.handle2.getPosition().y - 64);
+                                                buttons.handle2.setPosition(buttons.handle2.getPosition().x, buttons.handle1.getPosition().y - 64);
                                             }
                                             else // Reset y to base level (1)
                                             {
                                                 buttons.handle2.setPosition(buttons.handle2.getPosition().x, buttons.handle1.getPosition().y);
                                             }
+                                        }
+                                        int tempMin = minDate;
+                                        int tempMax = maxDate;
+                                        minDate = min(leftDate, rightDate);
+                                        maxDate = max(leftDate, rightDate);
+                                        if (tempMin != minDate || tempMax != maxDate)
+                                        {
+                                            dateRangeUpdated == true;
                                         }
                                     }
                                 }
